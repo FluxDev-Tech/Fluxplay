@@ -12,8 +12,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ===== DEFAULT ACCOUNT (admin/player1) IF NONE EXIST =====
+  // This is optional now, since login is fixed below, but kept for register feature
   if (!localStorage.getItem('users')) {
-    const defaultUsers = [{ username: 'admin', email: 'admin@fluxplay.com', password: 'player1' }];
+    const defaultUsers = [
+      { username: 'admin', email: 'admin@fluxplay.com', password: 'player1' }
+    ];
     localStorage.setItem('users', JSON.stringify(defaultUsers));
   }
 
@@ -43,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (registerForm) {
     registerForm.addEventListener('submit', (e) => {
       e.preventDefault();
+
       const username = document.getElementById('regUsername').value.trim();
       const email = document.getElementById('regEmail').value.trim();
       const password = document.getElementById('regPassword').value.trim();
@@ -52,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('All fields are required.');
         return;
       }
+
       if (password !== confirmPassword) {
         alert('Passwords do not match.');
         return;
@@ -59,6 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const users = JSON.parse(localStorage.getItem('users')) || [];
       const exists = users.some(u => u.username === username || u.email === email);
+
       if (exists) {
         alert('Username or email already exists.');
         return;
@@ -72,22 +78,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ===== LOGIN FUNCTION =====
+  // ===== LOGIN FUNCTION (FIXED admin/player1) =====
   if (loginForm) {
     loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const username = loginForm.username.value.trim();
-      const password = loginForm.password.value.trim();
 
-      const users = JSON.parse(localStorage.getItem('users')) || [];
-      const user = users.find(u => u.username === username && u.password === password);
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
 
-      if (user) {
+      if (username === 'admin' && password === 'player1') {
+        alert('Login successful!');
         localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('profile', JSON.stringify(user));
+        localStorage.setItem(
+          'profile',
+          JSON.stringify({ username: 'admin', email: 'admin@fluxplay.com' })
+        );
         window.location.href = 'dashboard.html';
       } else {
-        alert('Invalid username or password');
+        alert('Incorrect username or password.');
       }
     });
   }
@@ -175,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
       wins: 85,
       winRate: '70.8%',
       avgGameTime: '23 mins',
-      rank: '#432',
+      globalRank: '#432',
       tier: 'Diamond',
       tournaments: 4,
       activeSince: 'Mar 2023'
@@ -186,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
       wins: 'wins',
       winRate: 'winRate',
       avgGameTime: 'avgGameTime',
-      rank: 'globalRank',
+      globalRank: 'globalRank',
       tier: 'tier',
       tournaments: 'tournaments',
       activeSince: 'activeSince'
@@ -198,4 +206,3 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
-      
