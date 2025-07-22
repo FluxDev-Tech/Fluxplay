@@ -86,74 +86,7 @@
   </main>
 </div>
 
-<script src="app.js" defer></script>
-<script>
-  window.addEventListener('DOMContentLoaded', () => {
-    // Games Played Over Time - Line Chart
-    const ctx1 = document.getElementById('gamesPlayedChart').getContext('2d');
-    new Chart(ctx1, {
-      type: 'line',
-      data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-        datasets: [{
-          label: 'Games Played',
-          data: [12, 19, 8, 24, 32, 28, 40],
-          fill: true,
-          borderColor: '#7c3aed',
-          backgroundColor: 'rgba(124, 58, 237, 0.3)',
-          tension: 0.3,
-          pointBackgroundColor: '#7c3aed'
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: { beginAtZero: true }
-        },
-        plugins: { legend: { labels: { color: 'black' } } }
-      }
-    });
-
-    // Trophies Earned - Bar Chart
-    const ctx2 = document.getElementById('trophiesChart').getContext('2d');
-    new Chart(ctx2, {
-      type: 'bar',
-      data: {
-        labels: ['Cyber Arena', 'Dragon Valley', 'Mecha Storm'],
-        datasets: [{
-          label: 'Trophies',
-          data: [15, 10, 7],
-          backgroundColor: ['#db2777', '#f97316', '#facc15']
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: { beginAtZero: true }
-        },
-        plugins: { legend: { display: false } }
-      }
-    });
-
-    // Online Hours Distribution - Doughnut Chart
-    const ctx3 = document.getElementById('onlineHoursChart').getContext('2d');
-    new Chart(ctx3, {
-      type: 'doughnut',
-      data: {
-        labels: ['Cyber Arena', 'Dragon Valley', 'Mecha Storm'],
-        datasets: [{
-          label: 'Online Hours',
-          data: [250, 300, 162],
-          backgroundColor: ['#eab308', '#f97316', '#7c3aed']
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: { legend: { position: 'right' } }
-      }
-    });
-  });
-</script>
+<script src="assets/js/app.js" defer></script>
 
 </body>
 </html>
