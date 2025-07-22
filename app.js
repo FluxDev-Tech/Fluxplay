@@ -1,4 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // ===== LOGIN CHECK FOR PROTECTED PAGES =====
+  const protectedPages = ['dashboard.html', 'profile.html'];
+  const currentPage = window.location.pathname.split('/').pop();
+
+  if (protectedPages.includes(currentPage)) {
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+      // Redirect to login if not logged in
+      window.location.href = 'login.html';
+      return; // Stop running further code
+    }
+  }
+
   // ===== SIDEBAR TOGGLE (mobile) =====
   const sidebar = document.getElementById('sidebar');
   const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
@@ -13,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
     sidebar?.classList.remove('open');
   });
 
-  // Close sidebar if clicked outside on mobile
   document.addEventListener('click', (e) => {
     if (
       sidebar &&
@@ -51,7 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   themeToggleBtn?.addEventListener('click', toggleTheme);
 
-  // Initialize theme on page load
   const storedTheme = localStorage.getItem('theme');
   if (storedTheme) {
     applyTheme(storedTheme);
@@ -106,10 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       alert('Profile saved successfully!');
     });
-  }
 
-  // Load profile on page load if profile form or display elements exist
-  if (document.getElementById('profileForm') || document.getElementById('displayName')) {
     loadProfile();
   }
 
@@ -127,74 +134,14 @@ document.addEventListener('DOMContentLoaded', () => {
     loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value.trim();
+      const username = loginForm.username.value.trim();
+      const password = loginForm.password.value.trim();
 
       if (username === 'player' && password === '1234') {
         localStorage.setItem('isLoggedIn', 'true');
         window.location.href = 'dashboard.html';
       } else {
         alert('Invalid login!');
-      }
-    });
-  }
-
-  // ===== LOGIN / REGISTER TAB SWITCH & FORM SUBMIT =====
-  const loginTab = document.getElementById('loginTab');
-  const registerTab = document.getElementById('registerTab');
-  const registerForm = document.getElementById('registerForm');
-
-  if (loginTab && registerTab && loginForm && registerForm) {
-    function showLogin() {
-      loginForm.classList.remove('hidden');
-      registerForm.classList.add('hidden');
-      loginTab.classList.add('bg-yellow-400', 'text-gray-900');
-      loginTab.classList.remove('bg-gray-700', 'text-white');
-      registerTab.classList.remove('bg-yellow-400', 'text-gray-900');
-      registerTab.classList.add('bg-gray-700', 'text-white');
-    }
-
-    function showRegister() {
-      loginForm.classList.add('hidden');
-      registerForm.classList.remove('hidden');
-      registerTab.classList.add('bg-yellow-400', 'text-gray-900');
-      registerTab.classList.remove('bg-gray-700', 'text-white');
-      loginTab.classList.remove('bg-yellow-400', 'text-gray-900');
-      loginTab.classList.add('bg-gray-700', 'text-white');
-    }
-
-    loginTab.addEventListener('click', showLogin);
-    registerTab.addEventListener('click', showRegister);
-
-    showLogin();
-
-    loginForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const username = loginForm.username.value.trim();
-      const password = loginForm.password.value.trim();
-
-      if (username === 'player' && password === '1234') {
-        alert('Login successful!');
-        localStorage.setItem('isLoggedIn', 'true');
-        window.location.href = 'dashboard.html';
-      } else {
-        alert('Invalid login credentials.');
-      }
-    });
-
-    registerForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const fullname = registerForm.fullname.value.trim();
-      const username = registerForm.username.value.trim();
-      const email = registerForm.email.value.trim();
-      const password = registerForm.password.value.trim();
-
-      if (fullname && username && email && password) {
-        alert(`Account created for ${fullname}! You can now login.`);
-        registerForm.reset();
-        showLogin();
-      } else {
-        alert('Please fill in all fields.');
       }
     });
   }
