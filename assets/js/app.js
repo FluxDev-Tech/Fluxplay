@@ -11,8 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ===== DEFAULT ACCOUNT (admin/player1) IF NONE EXIST =====
-  // This is optional now, since login is fixed below, but kept for register feature
+  // ===== DEFAULT ACCOUNT =====
   if (!localStorage.getItem('users')) {
     const defaultUsers = [
       { username: 'admin', email: 'admin@fluxplay.com', password: 'player1' }
@@ -20,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('users', JSON.stringify(defaultUsers));
   }
 
-  // ===== LOGIN & REGISTER FORM TOGGLER =====
+  // ===== LOGIN & REGISTER TAB TOGGLING =====
   const loginTab = document.getElementById('loginTab');
   const registerTab = document.getElementById('registerTab');
   const loginForm = document.getElementById('loginForm');
@@ -78,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ===== LOGIN FUNCTION (FIXED admin/player1) =====
+  // ===== LOGIN FUNCTION =====
   if (loginForm) {
     loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -89,10 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (username === 'admin' && password === 'player1') {
         alert('Login successful!');
         localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem(
-          'profile',
-          JSON.stringify({ username: 'admin', email: 'admin@fluxplay.com' })
-        );
+        localStorage.setItem('profile', JSON.stringify({ username: 'admin', email: 'admin@fluxplay.com' }));
         window.location.href = 'dashboard.html';
       } else {
         alert('Incorrect username or password.');
@@ -100,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ===== PROFILE NAME ON DASHBOARD/STATS =====
+  // ===== SHOW PROFILE USERNAME =====
   if (['dashboard.html', 'stats.html'].includes(page)) {
     const profile = JSON.parse(localStorage.getItem('profile'));
     const displayName = document.getElementById('displayName');
@@ -109,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ===== LOGOUT HANDLER =====
+  // ===== LOGOUT FUNCTION =====
   if (page === 'logout.html') {
     localStorage.clear();
     setTimeout(() => {
@@ -117,28 +113,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 500);
   }
 
-  // ===== SIDEBAR TOGGLE =====
+  // ===== SIDEBAR TOGGLE FIX =====
   const sidebar = document.getElementById('sidebar');
   const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
   const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
 
   function toggleSidebar() {
-    sidebar?.classList.toggle('open');
+    if (sidebar.classList.contains('-translate-x-full')) {
+      sidebar.classList.remove('-translate-x-full');
+      sidebar.classList.add('translate-x-0');
+    } else {
+      sidebar.classList.add('-translate-x-full');
+      sidebar.classList.remove('translate-x-0');
+    }
   }
 
   sidebarToggleBtn?.addEventListener('click', toggleSidebar);
-  sidebarCloseBtn?.addEventListener('click', () => {
-    sidebar?.classList.remove('open');
-  });
+  sidebarCloseBtn?.addEventListener('click', toggleSidebar);
 
   document.addEventListener('click', (e) => {
     if (
-      sidebar &&
-      sidebar.classList.contains('open') &&
+      sidebar.classList.contains('translate-x-0') &&
       !sidebar.contains(e.target) &&
       !sidebarToggleBtn.contains(e.target)
     ) {
-      sidebar.classList.remove('open');
+      sidebar.classList.remove('translate-x-0');
+      sidebar.classList.add('-translate-x-full');
     }
   });
 
@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
     applyTheme(prefersDark ? 'dark' : 'light');
   }
 
-  // ===== STATS PAGE DUMMY DATA =====
+  // ===== STATS PAGE DATA =====
   if (page === 'stats.html') {
     const stats = {
       gamesPlayed: 120,
@@ -189,18 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
       activeSince: 'Mar 2023'
     };
 
-    const map = {
-      gamesPlayed: 'gamesPlayed',
-      wins: 'wins',
-      winRate: 'winRate',
-      avgGameTime: 'avgGameTime',
-      globalRank: 'globalRank',
-      tier: 'tier',
-      tournaments: 'tournaments',
-      activeSince: 'activeSince'
-    };
-
-    for (const [key, id] of Object.entries(map)) {
+    for (const [key, id] of Object.entries(stats)) {
       const el = document.getElementById(id);
       if (el) el.textContent = stats[key];
     }
