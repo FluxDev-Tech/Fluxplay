@@ -22,7 +22,7 @@
   <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-900 flex flex-col transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out shadow-lg">
     <div class="flex items-center justify-between px-6 py-5 border-b border-gray-700 dark:border-gray-300">
       <h2 class="text-3xl font-extrabold text-yellow-400 dark:text-yellow-600 tracking-wide">FluxPlay</h2>
-      <button onclick="toggleSidebar()" class="lg:hidden text-yellow-400 dark:text-yellow-600 text-2xl hover:text-yellow-300 dark:hover:text-yellow-500" aria-label="Close Sidebar">✖</button>
+      <button id="sidebarCloseBtn" class="lg:hidden text-yellow-400 dark:text-yellow-600 text-2xl hover:text-yellow-300 dark:hover:text-yellow-500" aria-label="Close Sidebar">✖</button>
     </div>
 
     <nav class="flex flex-col mt-8 px-4 space-y-1 flex-1 overflow-y-auto">
@@ -58,7 +58,7 @@
 
     <!-- Mobile Top Bar -->
     <header class="fixed top-0 left-0 right-0 bg-gray-900 dark:bg-gray-100 border-b border-gray-700 dark:border-gray-300 p-4 flex items-center justify-between lg:hidden z-40">
-      <button onclick="toggleSidebar()" class="text-yellow-400 dark:text-yellow-600 text-3xl" aria-label="Open Sidebar">☰</button>
+      <button id="sidebarToggleBtn" class="text-yellow-400 dark:text-yellow-600 text-3xl" aria-label="Open Sidebar">☰</button>
       <h1 class="text-xl font-bold">FluxPlay</h1>
       <div></div>
     </header>
@@ -82,11 +82,151 @@
         <canvas id="onlineHoursChart"></canvas>
       </div>
 
+      <section class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div class="bg-yellow-400 text-gray-900 dark:bg-yellow-600 dark:text-gray-100 rounded-xl p-6 shadow-lg flex flex-col items-center justify-center">
+          <h3 class="text-xl font-bold mb-2">Games Played</h3>
+          <p id="gamesPlayed" class="text-3xl font-extrabold">--</p>
+        </div>
+        <div class="bg-pink-600 text-white dark:bg-pink-400 rounded-xl p-6 shadow-lg flex flex-col items-center justify-center">
+          <h3 class="text-xl font-bold mb-2">Wins</h3>
+          <p id="wins" class="text-3xl font-extrabold">--</p>
+        </div>
+        <div class="bg-indigo-700 text-white dark:bg-indigo-500 rounded-xl p-6 shadow-lg flex flex-col items-center justify-center">
+          <h3 class="text-xl font-bold mb-2">Win Rate</h3>
+          <p id="winRate" class="text-3xl font-extrabold">--</p>
+        </div>
+        <div class="bg-purple-600 text-white dark:bg-purple-400 rounded-xl p-6 shadow-lg flex flex-col items-center justify-center">
+          <h3 class="text-xl font-bold mb-2">Avg Game Time</h3>
+          <p id="avgGameTime" class="text-3xl font-extrabold">--</p>
+        </div>
+        <div class="bg-yellow-500 text-gray-900 dark:bg-yellow-300 rounded-xl p-6 shadow-lg flex flex-col items-center justify-center">
+          <h3 class="text-xl font-bold mb-2">Global Rank</h3>
+          <p id="globalRank" class="text-3xl font-extrabold">--</p>
+        </div>
+        <div class="bg-pink-700 text-white dark:bg-pink-500 rounded-xl p-6 shadow-lg flex flex-col items-center justify-center">
+          <h3 class="text-xl font-bold mb-2">Tier</h3>
+          <p id="tier" class="text-3xl font-extrabold">--</p>
+        </div>
+        <div class="bg-red-600 text-white dark:bg-red-500 rounded-xl p-6 shadow-lg flex flex-col items-center justify-center">
+          <h3 class="text-xl font-bold mb-2">Tournaments</h3>
+          <p id="tournaments" class="text-3xl font-extrabold">--</p>
+        </div>
+        <div class="bg-green-600 text-white dark:bg-green-500 rounded-xl p-6 shadow-lg flex flex-col items-center justify-center">
+          <h3 class="text-xl font-bold mb-2">Active Since</h3>
+          <p id="activeSince" class="text-3xl font-extrabold">--</p>
+        </div>
+      </section>
+
     </section>
   </main>
 </div>
 
 <script src="assets/js/app.js" defer></script>
+
+<script>
+  // Chart.js charts setup
+  document.addEventListener('DOMContentLoaded', () => {
+    // Games Played Over Time - Line Chart
+    const ctxGames = document.getElementById('gamesPlayedChart').getContext('2d');
+    const gamesPlayedChart = new Chart(ctxGames, {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+        datasets: [{
+          label: 'Games Played',
+          data: [10, 15, 20, 30, 50, 65, 80, 100],
+          backgroundColor: 'rgba(251, 191, 36, 0.3)',
+          borderColor: 'rgba(251, 191, 36, 1)',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.3,
+          pointRadius: 5,
+          pointBackgroundColor: 'rgba(251, 191, 36, 1)',
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: { mode: 'index', intersect: false }
+        },
+        scales: {
+          y: { beginAtZero: true, ticks: { stepSize: 10 } }
+        }
+      }
+    });
+
+    // Trophies Earned - Bar Chart
+    const ctxTrophies = document.getElementById('trophiesChart').getContext('2d');
+    const trophiesChart = new Chart(ctxTrophies, {
+      type: 'bar',
+      data: {
+        labels: ['Gold', 'Silver', 'Bronze'],
+        datasets: [{
+          label: 'Trophies',
+          data: [10, 15, 7],
+          backgroundColor: [
+            'rgba(250, 204, 21, 0.8)',
+            'rgba(156, 163, 175, 0.8)',
+            'rgba(205, 127, 50, 0.8)'
+          ],
+          borderWidth: 1,
+          borderColor: 'rgba(0,0,0,0.2)'
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, stepSize: 5 } }
+      }
+    });
+
+    // Online Hours Distribution - Doughnut Chart
+    const ctxOnlineHours = document.getElementById('onlineHoursChart').getContext('2d');
+    const onlineHoursChart = new Chart(ctxOnlineHours, {
+      type: 'doughnut',
+      data: {
+        labels: ['Action', 'Strategy', 'RPG', 'MMO', 'Others'],
+        datasets: [{
+          label: 'Online Hours',
+          data: [250, 150, 180, 80, 52],
+          backgroundColor: [
+            'rgba(239, 68, 68, 0.8)',
+            'rgba(234, 179, 8, 0.8)',
+            'rgba(59, 130, 246, 0.8)',
+            'rgba(139, 92, 246, 0.8)',
+            'rgba(107, 114, 128, 0.8)'
+          ],
+          borderWidth: 1,
+          borderColor: 'rgba(255,255,255,0.8)'
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'right' }
+        }
+      }
+    });
+
+    // Set textual stats values from localStorage profile or hardcoded demo data
+    const statsData = {
+      gamesPlayed: 128,
+      wins: 85,
+      winRate: '70.8%',
+      avgGameTime: '23 mins',
+      globalRank: '#432',
+      tier: 'Diamond',
+      tournaments: 4,
+      activeSince: 'Mar 2023'
+    };
+
+    for (const [key, value] of Object.entries(statsData)) {
+      const el = document.getElementById(key);
+      if (el) el.textContent = value;
+    }
+  });
+</script>
 
 </body>
 </html>
