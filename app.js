@@ -1,4 +1,4 @@
-// ===== SIDEBAR TOGGLE (mobile) =====
+// ===== SIDEBAR TOGGLE (Mobile) =====
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
   sidebar?.classList.toggle('-translate-x-full');
@@ -30,7 +30,7 @@ function toggleTheme() {
 
 themeToggleBtn?.addEventListener('click', toggleTheme);
 
-// ===== PROFILE FORM =====
+// ===== PROFILE FORM LOADING/SAVING =====
 function loadProfile() {
   const profile = JSON.parse(localStorage.getItem('profile')) || {
     username: 'playerone',
@@ -39,17 +39,11 @@ function loadProfile() {
     role: 'Pro Gamer',
   };
 
-  const usernameInput = document.getElementById('username');
-  const emailInput = document.getElementById('email');
-  const bioInput = document.getElementById('bio');
-  const displayName = document.getElementById('displayName');
-  const displayRole = document.getElementById('displayRole');
-
-  if (usernameInput) usernameInput.value = profile.username;
-  if (emailInput) emailInput.value = profile.email;
-  if (bioInput) bioInput.value = profile.bio;
-  if (displayName) displayName.textContent = profile.username;
-  if (displayRole) displayRole.textContent = profile.role;
+  document.getElementById('username')?.value = profile.username;
+  document.getElementById('email')?.value = profile.email;
+  document.getElementById('bio')?.value = profile.bio;
+  document.getElementById('displayName')?.textContent = profile.username;
+  document.getElementById('displayRole')?.textContent = profile.role;
 }
 
 const profileForm = document.getElementById('profileForm');
@@ -66,37 +60,30 @@ if (profileForm) {
       return;
     }
 
-    const profile = {
-      username,
-      email,
-      bio,
-      role: 'Pro Gamer',
-    };
-
+    const profile = { username, email, bio, role: 'Pro Gamer' };
     localStorage.setItem('profile', JSON.stringify(profile));
 
-    if (document.getElementById('displayName')) {
-      document.getElementById('displayName').textContent = username;
-    }
-    if (document.getElementById('displayRole')) {
-      document.getElementById('displayRole').textContent = profile.role;
-    }
+    document.getElementById('displayName')?.textContent = username;
+    document.getElementById('displayRole')?.textContent = profile.role;
 
     alert('Profile saved successfully!');
   });
+
+  loadProfile();
 }
 
 // ===== LOGOUT PAGE HANDLER =====
 if (window.location.pathname.includes('logout.html')) {
-  localStorage.clear(); // clear login, theme, profile data
+  localStorage.removeItem('isLoggedIn');
+  localStorage.removeItem('profile');
   setTimeout(() => {
     window.location.href = 'login.html';
   }, 1000);
 }
 
-// ===== LOGIN & REGISTER PAGE LOGIC =====
+// ===== LOGIN/REGISTER PAGE LOGIC =====
 document.addEventListener('DOMContentLoaded', () => {
-  // Load saved theme or system preference
+  // Apply theme
   const storedTheme = localStorage.getItem('theme');
   if (storedTheme) {
     applyTheme(storedTheme);
@@ -105,9 +92,11 @@ document.addEventListener('DOMContentLoaded', () => {
     applyTheme(prefersDark ? 'dark' : 'light');
   }
 
-  // Load profile if profile page present
-  if (document.getElementById('profileForm') || document.getElementById('displayName')) {
-    loadProfile();
+  // Protect dashboard and profile
+  const protectedPages = ['dashboard.html', 'profile.html', 'stats.html'];
+  const path = window.location.pathname.split('/').pop();
+  if (protectedPages.includes(path) && localStorage.getItem('isLoggedIn') !== 'true') {
+    window.location.href = 'login.html';
   }
 
   const loginTab = document.getElementById('loginTab');
@@ -115,40 +104,32 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginForm = document.getElementById('loginForm');
   const registerForm = document.getElementById('registerForm');
 
-  // Show login form by default
   function showLogin() {
-    if (!loginTab || !registerTab || !loginForm || !registerForm) return;
+    loginTab?.classList.add('bg-yellow-400', 'text-gray-900', 'shadow-lg');
+    loginTab?.classList.remove('bg-gray-700', 'hover:bg-gray-600', 'text-white');
+    registerTab?.classList.remove('bg-yellow-400', 'text-gray-900', 'shadow-lg');
+    registerTab?.classList.add('bg-gray-700', 'hover:bg-gray-600', 'text-white');
 
-    loginTab.classList.add('bg-yellow-400', 'text-gray-900', 'shadow-lg');
-    loginTab.classList.remove('bg-gray-700', 'hover:bg-gray-600', 'text-white');
-    registerTab.classList.remove('bg-yellow-400', 'text-gray-900', 'shadow-lg');
-    registerTab.classList.add('bg-gray-700', 'hover:bg-gray-600', 'text-white');
-
-    loginForm.classList.remove('hidden');
-    registerForm.classList.add('hidden');
+    loginForm?.classList.remove('hidden');
+    registerForm?.classList.add('hidden');
   }
 
   function showRegister() {
-    if (!loginTab || !registerTab || !loginForm || !registerForm) return;
+    registerTab?.classList.add('bg-yellow-400', 'text-gray-900', 'shadow-lg');
+    registerTab?.classList.remove('bg-gray-700', 'hover:bg-gray-600', 'text-white');
+    loginTab?.classList.remove('bg-yellow-400', 'text-gray-900', 'shadow-lg');
+    loginTab?.classList.add('bg-gray-700', 'hover:bg-gray-600', 'text-white');
 
-    registerTab.classList.add('bg-yellow-400', 'text-gray-900', 'shadow-lg');
-    registerTab.classList.remove('bg-gray-700', 'hover:bg-gray-600', 'text-white');
-    loginTab.classList.remove('bg-yellow-400', 'text-gray-900', 'shadow-lg');
-    loginTab.classList.add('bg-gray-700', 'hover:bg-gray-600', 'text-white');
-
-    registerForm.classList.remove('hidden');
-    loginForm.classList.add('hidden');
+    registerForm?.classList.remove('hidden');
+    loginForm?.classList.add('hidden');
   }
 
   showLogin();
-
   loginTab?.addEventListener('click', showLogin);
   registerTab?.addEventListener('click', showRegister);
 
-  // Demo user credentials
+  // Handle login
   const demoUser = { username: 'player', password: '1234' };
-
-  // Handle login submission
   loginForm?.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -160,23 +141,21 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const storedUsers = JSON.parse(localStorage.getItem('users') || '[]');
-
-    const userFound =
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const validLogin =
       (username === demoUser.username && password === demoUser.password) ||
-      storedUsers.some(user => user.username === username && user.password === password);
+      users.some(u => u.username === username && u.password === password);
 
-    if (userFound) {
-      alert(`Welcome back, ${username}!`);
-      loginForm.reset();
-      // Redirect after login, e.g.:
-      // window.location.href = 'dashboard.html';
+    if (validLogin) {
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('profile', JSON.stringify({ username, role: 'Pro Gamer' }));
+      window.location.href = 'dashboard.html';
     } else {
       alert('Invalid username or password.');
     }
   });
 
-  // Handle register submission
+  // Handle register
   registerForm?.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -192,22 +171,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      alert('Please enter a valid email address.');
+      alert('Invalid email format.');
       return;
     }
 
-    let users = JSON.parse(localStorage.getItem('users') || '[]');
-
-    if (users.some(user => user.username === username)) {
-      alert('Username already taken. Please choose another one.');
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    if (users.some(u => u.username === username)) {
+      alert('Username already taken.');
       return;
     }
 
     users.push({ fullname, username, email, password });
     localStorage.setItem('users', JSON.stringify(users));
-
-    alert('Account created successfully! You can now log in.');
-
+    alert('Account created successfully. You can now log in.');
     registerForm.reset();
     showLogin();
   });
