@@ -1,208 +1,133 @@
 document.addEventListener('DOMContentLoaded', () => {
   const page = window.location.pathname.split('/').pop();
 
-  // ==== PROTECTED PAGES ====
+  // — Protected pages
   const protectedPages = ['dashboard.html', 'profile.html', 'stats.html'];
-  if (protectedPages.includes(page)) {
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
-    if (isLoggedIn !== 'true') {
-      window.location.href = 'login.html';
-      return;
-    }
+  if (protectedPages.includes(page) && localStorage.getItem('isLoggedIn') !== 'true') {
+    return window.location.href = 'login.html';
   }
 
-  // ==== LOGIN / REGISTER FORM TOGGLER ====
+  // — Tabs & forms
   const loginTab = document.getElementById('loginTab');
   const registerTab = document.getElementById('registerTab');
   const loginForm = document.getElementById('loginForm');
   const registerForm = document.getElementById('registerForm');
 
-  if (loginTab && registerTab && loginForm && registerForm) {
-    loginTab.addEventListener('click', () => {
+  if (loginTab && registerTab) {
+    loginTab.onclick = () => {
       loginForm.classList.remove('hidden');
       registerForm.classList.add('hidden');
-      loginTab.classList.add('bg-yellow-400', 'text-gray-900');
-      registerTab.classList.remove('bg-yellow-400', 'text-gray-900');
-    });
-
-    registerTab.addEventListener('click', () => {
+      loginTab.classList.add('bg-yellow-400');
+      registerTab.classList.remove('bg-yellow-400');
+    };
+    registerTab.onclick = () => {
       registerForm.classList.remove('hidden');
       loginForm.classList.add('hidden');
-      registerTab.classList.add('bg-yellow-400', 'text-gray-900');
-      loginTab.classList.remove('bg-yellow-400', 'text-gray-900');
-    });
+      registerTab.classList.add('bg-yellow-400');
+      loginTab.classList.remove('bg-yellow-400');
+    };
   }
 
-  // ==== Default Account (admin / player1) ====
-  const defaultUsers = [
-    { username: 'admin', email: 'admin@example.com', password: 'player1' }
-  ];
-
-  const existingUsers = JSON.parse(localStorage.getItem('users')) || [];
-  if (!existingUsers.some(u => u.username === 'admin')) {
-    localStorage.setItem('users', JSON.stringify([...defaultUsers, ...existingUsers]));
+  // — Default admin player1 account
+  const initUsers = JSON.parse(localStorage.getItem('users')) || [];
+  if (!initUsers.some(u => u.username === 'admin')) {
+    initUsers.unshift({ username: 'admin', email: 'admin@example.com', password: 'player1' });
+    localStorage.setItem('users', JSON.stringify(initUsers));
   }
 
-  // ==== REGISTER FORM SUBMIT ====
+  // — Registration
   if (registerForm) {
-    registerForm.addEventListener('submit', (e) => {
+    registerForm.onsubmit = e => {
       e.preventDefault();
+      const u = document.getElementById('regUsername').value.trim();
+      const eMail = document.getElementById('regEmail').value.trim();
+      const pw = document.getElementById('regPassword').value.trim();
+      const cp = document.getElementById('regConfirmPassword').value.trim();
 
-      const username = document.getElementById('regUsername').value.trim();
-      const email = document.getElementById('regEmail').value.trim();
-      const password = document.getElementById('regPassword').value.trim();
-      const confirmPassword = document.getElementById('regConfirmPassword')?.value.trim();
+      if (!u || !eMail || !pw || !cp) return alert('Fill all fields!');
+      if (pw !== cp) return alert('Passwords do not match!');
 
-      if (!username || !email || !password || !confirmPassword) {
-        alert('Please fill in all fields.');
-        return;
-      }
+      const users = JSON.parse(localStorage.getItem('users'));
+      if (users.some(x => x.username === u || x.email === eMail))
+        return alert('Username or email already registered.');
 
-      if (password !== confirmPassword) {
-        alert('Passwords do not match.');
-        return;
-      }
-
-      const users = JSON.parse(localStorage.getItem('users')) || [];
-      const userExists = users.some(user => user.username === username || user.email === email);
-
-      if (userExists) {
-        alert('Username or email already registered.');
-        return;
-      }
-
-      users.push({ username, email, password });
+      users.push({ username: u, email: eMail, password: pw });
       localStorage.setItem('users', JSON.stringify(users));
-
-      alert('Registration successful! You can now login.');
-      loginTab?.click();
-    });
+      alert('Registered successfully! Please log in.');
+      loginTab.click();
+    };
   }
 
-  // ==== LOGIN FORM SUBMIT ====
+  // — Login
   if (loginForm) {
-    loginForm.addEventListener('submit', (e) => {
+    loginForm.onsubmit = e => {
       e.preventDefault();
-
-      const username = loginForm.username.value.trim();
-      const password = loginForm.password.value.trim();
-
-      const users = JSON.parse(localStorage.getItem('users')) || [];
-      const user = users.find(u => u.username === username && u.password === password);
-
+      const u = loginForm.username.value.trim();
+      const pw = loginForm.password.value.trim();
+      const users = JSON.parse(localStorage.getItem('users'));
+      const user = users.find(x => x.username === u && x.password === pw);
       if (user) {
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('profile', JSON.stringify(user));
-        window.location.href = 'dashboard.html';
-      } else {
-        alert('Invalid username or password');
+        return window.location.href = 'dashboard.html';
       }
-    });
+      alert('Invalid username or password!');
+    };
   }
 
-  // ==== DASHBOARD: SHOW PROFILE NAME ====
-  if (page === 'dashboard.html' || page === 'stats.html') {
+  // — Show username
+  if (['dashboard.html','stats.html'].includes(page)) {
     const profile = JSON.parse(localStorage.getItem('profile'));
-    const displayName = document.getElementById('displayName');
-    if (displayName && profile?.username) {
-      displayName.textContent = profile.username;
-    }
+    const nameSpan = document.getElementById('displayName');
+    if (profile?.username && nameSpan) nameSpan.textContent = profile.username;
   }
 
-  // ==== LOGOUT HANDLER ====
+  // — Logout action
   if (page === 'logout.html') {
     localStorage.clear();
-    setTimeout(() => {
-      window.location.href = 'login.html';
-    }, 500);
+    setTimeout(() => window.location.href = 'login.html', 500);
   }
 
-  // ==== SIDEBAR TOGGLE ====
+  // — Sidebar toggle
   const sidebar = document.getElementById('sidebar');
-  const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
-  const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
-
-  function toggleSidebar() {
-    sidebar?.classList.toggle('open');
-  }
-
-  sidebarToggleBtn?.addEventListener('click', toggleSidebar);
-  sidebarCloseBtn?.addEventListener('click', () => {
-    sidebar?.classList.remove('open');
-  });
-
-  document.addEventListener('click', (e) => {
-    if (
-      sidebar &&
-      sidebar.classList.contains('open') &&
-      !sidebar.contains(e.target) &&
-      !sidebarToggleBtn.contains(e.target)
-    ) {
+  const btnOpen = document.getElementById('sidebarToggleBtn');
+  const btnClose = document.getElementById('sidebarCloseBtn');
+  if (btnOpen) btnOpen.onclick = () => sidebar.classList.toggle('open');
+  if (btnClose) btnClose.onclick = () => sidebar.classList.remove('open');
+  document.addEventListener('click', e => {
+    if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && !btnOpen.contains(e.target)) {
       sidebar.classList.remove('open');
     }
   });
 
-  // ==== THEME TOGGLE ====
-  const themeToggleBtn = document.getElementById('themeToggleBtn');
-  const sunIcon = document.getElementById('sunIcon');
-  const moonIcon = document.getElementById('moonIcon');
+  // — Theme toggle
+  const themeBtn = document.getElementById('themeToggleBtn');
+  const sun = document.getElementById('sunIcon');
+  const moon = document.getElementById('moonIcon');
+  const applyTheme = t => {
+    document.documentElement.classList.toggle('dark', t === 'dark');
+    sun.classList.toggle('hidden', t === 'dark');
+    moon.classList.toggle('hidden', t !== 'dark');
+    localStorage.setItem('theme', t);
+  };
+  if (themeBtn) themeBtn.onclick = () => applyTheme(document.documentElement.classList.contains('dark') ? 'light' : 'dark');
+  applyTheme(localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark':'light'));
 
-  function applyTheme(theme) {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-      sunIcon?.classList.remove('hidden');
-      moonIcon?.classList.add('hidden');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      sunIcon?.classList.add('hidden');
-      moonIcon?.classList.remove('hidden');
-      localStorage.setItem('theme', 'light');
-    }
-  }
-
-  function toggleTheme() {
-    const isDark = document.documentElement.classList.contains('dark');
-    applyTheme(isDark ? 'light' : 'dark');
-  }
-
-  themeToggleBtn?.addEventListener('click', toggleTheme);
-
-  const storedTheme = localStorage.getItem('theme');
-  if (storedTheme) {
-    applyTheme(storedTheme);
-  } else {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    applyTheme(prefersDark ? 'dark' : 'light');
-  }
-
-  // ==== STATS PAGE FILLER ====
+  // — Stats page data
   if (page === 'stats.html') {
     const stats = {
       gamesPlayed: 120,
       wins: 85,
       winRate: '70.8%',
       avgGameTime: '23 mins',
-      rank: '#432',
+      globalRank: '#432',
       tier: 'Diamond',
       tournaments: 4,
       activeSince: 'Mar 2023'
     };
-
-    const map = {
-      gamesPlayed: 'gamesPlayed',
-      wins: 'wins',
-      winRate: 'winRate',
-      avgGameTime: 'avgGameTime',
-      rank: 'globalRank',
-      tier: 'tier',
-      tournaments: 'tournaments',
-      activeSince: 'activeSince'
-    };
-
-    for (const [key, id] of Object.entries(map)) {
-      const el = document.getElementById(id);
-      if (el) el.textContent = stats[key];
-    }
+    Object.entries(stats).forEach(([key, val]) => {
+      const el = document.getElementById(key);
+      if (el) el.textContent = val;
+    });
   }
 });
