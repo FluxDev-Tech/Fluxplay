@@ -113,32 +113,40 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 500);
   }
 
-  // ===== SIDEBAR TOGGLE FIX =====
+  // ===== SIDEBAR TOGGLE =====
   const sidebar = document.getElementById('sidebar');
   const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
   const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
 
+  function openSidebar() {
+    sidebar.classList.remove('-translate-x-full');
+    sidebar.classList.add('translate-x-0');
+  }
+
+  function closeSidebar() {
+    sidebar.classList.add('-translate-x-full');
+    sidebar.classList.remove('translate-x-0');
+  }
+
   function toggleSidebar() {
     if (sidebar.classList.contains('-translate-x-full')) {
-      sidebar.classList.remove('-translate-x-full');
-      sidebar.classList.add('translate-x-0');
+      openSidebar();
     } else {
-      sidebar.classList.add('-translate-x-full');
-      sidebar.classList.remove('translate-x-0');
+      closeSidebar();
     }
   }
 
-  sidebarToggleBtn?.addEventListener('click', toggleSidebar);
-  sidebarCloseBtn?.addEventListener('click', toggleSidebar);
+  sidebarToggleBtn?.addEventListener('click', openSidebar);
+  sidebarCloseBtn?.addEventListener('click', closeSidebar);
 
+  // Close sidebar if clicking outside on mobile
   document.addEventListener('click', (e) => {
     if (
       sidebar.classList.contains('translate-x-0') &&
       !sidebar.contains(e.target) &&
       !sidebarToggleBtn.contains(e.target)
     ) {
-      sidebar.classList.remove('translate-x-0');
-      sidebar.classList.add('-translate-x-full');
+      closeSidebar();
     }
   });
 
