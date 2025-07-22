@@ -5,75 +5,251 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>FluxPlay | Game Shop</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
-  <script defer src="app.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
   <style>
-    .modal {
+    body {
+      font-family: 'Orbitron', sans-serif;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: #fbbf24;
+      border-radius: 4px;
+    }
+    .modal-bg {
       background-color: rgba(0, 0, 0, 0.7);
+    }
+    /* Smooth scaling on game cards */
+    .game-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 20px rgba(251, 191, 36, 0.4);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+    /* Modal animations */
+    .modal-content {
+      animation: slideDownFade 0.3s ease forwards;
+    }
+    @keyframes slideDownFade {
+      0% {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    /* Buttons */
+    .btn-primary {
+      background: linear-gradient(90deg, #fbbf24, #f59e0b);
+      color: #1f2937;
+      font-weight: 700;
+      transition: background 0.3s ease;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(90deg, #f59e0b, #d97706);
+      color: #fff;
+    }
+    .btn-secondary {
+      background-color: #ef4444;
+      color: white;
+      font-weight: 700;
+      transition: background-color 0.3s ease;
+    }
+    .btn-secondary:hover {
+      background-color: #b91c1c;
     }
   </style>
 </head>
-<body class="bg-gray-900 text-white font-[Orbitron]">
+<body class="bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900">
 
-  <!-- Sidebar (Responsive) -->
-  <div class="flex">
-    <!-- Sidebar Container -->
-    <aside id="sidebar" class="bg-gray-800 w-64 h-screen fixed top-0 left-0 z-40 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
-      <div class="p-6">
-        <h2 class="text-2xl font-bold text-purple-500 mb-6">🎮 FluxPlay</h2>
-        <nav class="space-y-4">
-          <a href="home.html" class="block text-white hover:text-purple-400 transition">🏠 Home</a>
-          <a href="shop.html" class="block text-white hover:text-purple-400 transition">🛒 Shop</a>
-          <a href="dashboard.html" class="block text-white hover:text-purple-400 transition">📊 Dashboard</a>
-          <a href="profile.html" class="block text-white hover:text-purple-400 transition">👤 Profile</a>
-          <a href="stats.html" class="block text-white hover:text-purple-400 transition">📈 Stats</a>
-          <a href="logout.html" class="block text-red-400 hover:text-red-500 transition">🚪 Logout</a>
-        </nav>
-      </div>
-    </aside>
+<script>
+  // Redirect to login if not logged in
+  const profile = localStorage.getItem('profile');
+  if (!profile) window.location.href = 'login.html';
+</script>
 
-    <!-- Toggle Button (Mobile) -->
-    <button id="sidebarToggleBtn" class="md:hidden fixed top-4 left-4 z-50 p-2 bg-purple-600 text-white rounded shadow-lg">
-      ☰
-    </button>
+<div class="min-h-screen flex flex-col lg:flex-row">
+  <!-- Sidebar -->
+  <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-900 flex flex-col transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out shadow-lg">
+    <div class="flex items-center justify-between px-6 py-5 border-b border-gray-700 dark:border-gray-300">
+      <h2 class="text-3xl font-extrabold text-yellow-400 dark:text-yellow-600 tracking-wide">FluxPlay</h2>
+      <button id="sidebarCloseBtn" class="lg:hidden text-yellow-400 dark:text-yellow-600 text-2xl hover:text-yellow-300 dark:hover:text-yellow-500">✖</button>
+    </div>
+    <nav class="flex flex-col mt-8 px-4 space-y-1 flex-1 overflow-y-auto">
+      <a href="dashboard.html" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-yellow-400 hover:text-gray-900 dark:hover:text-gray-100 font-semibold">
+        <span class="text-2xl">🎮</span> Dashboard
+      </a>
+      <a href="profile.html" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-yellow-400 hover:text-gray-900 dark:hover:text-gray-100 font-semibold">
+        <span class="text-2xl">👤</span> Profile
+      </a>
+      <a href="stats.html" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-yellow-400 hover:text-gray-900 dark:hover:text-gray-100 font-semibold">
+        <span class="text-2xl">📊</span> Stats
+      </a>
+      <a href="shop.html" class="flex items-center gap-3 py-3 px-4 rounded-lg bg-yellow-400 text-gray-900 dark:bg-yellow-600 dark:text-gray-100 font-semibold" aria-current="page">
+        <span class="text-2xl">🛒</span> Shop
+      </a>
+      <a href="logout.html" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-red-500 hover:text-white font-semibold text-red-400 dark:text-red-600">
+        <span class="text-2xl">🚪</span> Logout
+      </a>
+    </nav>
+    <div class="px-6 py-4 border-t border-gray-700 dark:border-gray-300 flex items-center justify-between">
+      <button id="themeToggleBtn" class="flex items-center gap-2 text-yellow-400 dark:text-yellow-600 hover:text-yellow-300 dark:hover:text-yellow-500 font-semibold">
+        <svg id="sunIcon" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364-6.364l-1.414 1.414M7.05 16.95l-1.414 1.414M16.95 16.95l1.414 1.414M7.05 7.05L5.636 5.636M12 7a5 5 0 110 10 5 5 0 010-10z" />
+        </svg>
+        <svg id="moonIcon" class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M17.293 13.293a8 8 0 11-10.586-10.586 7 7 0 0010.586 10.586z" />
+        </svg>
+        <span>Dark Mode</span>
+      </button>
+    </div>
+  </aside>
 
-    <!-- Page Content -->
-    <div class="flex-1 ml-0 md:ml-64 w-full min-h-screen">
-      <!-- Header -->
-      <header class="flex items-center justify-between px-6 py-4 bg-gray-800 shadow">
-        <h1 class="text-2xl font-bold">🛒 FluxPlay Game Shop</h1>
-        <nav class="space-x-6 hidden md:flex">
-          <a href="home.html" class="hover:text-purple-400">Home</a>
-          <a href="shop.html" class="hover:text-purple-400">Shop</a>
-          <a href="dashboard.html" class="hover:text-purple-400">Dashboard</a>
-        </nav>
-      </header>
+  <!-- Main Content -->
+  <main class="flex-1 ml-0 lg:ml-64 p-8 pt-24 lg:pt-8 overflow-y-auto transition-colors duration-300">
+    <header class="fixed top-0 left-0 right-0 bg-gray-900 dark:bg-gray-100 border-b border-gray-700 dark:border-gray-300 p-4 flex items-center justify-between lg:hidden z-40">
+      <button id="sidebarToggleBtn" class="text-yellow-400 dark:text-yellow-600 text-3xl">☰</button>
+      <h1 class="text-xl font-bold">FluxPlay</h1>
+      <div></div>
+    </header>
 
-      <!-- Shop Grid -->
-      <section class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
-        <!-- Game Card -->
-        <div class="bg-gray-800 p-4 rounded-xl shadow hover:shadow-xl transition-all transform hover:scale-105">
-          <img src="https://placehold.co/300x180" alt="Game Cover" class="rounded mb-3 w-full" />
-          <h3 class="text-xl font-semibold">Cyber Rage</h3>
-          <p class="text-gray-400 text-sm">Action RPG | 2025</p>
-          <p class="mt-2 text-purple-400 font-bold">$49.99</p>
-          <button onclick="buyGame('Cyber Rage', '$49.99')" class="mt-4 w-full bg-purple-600 hover:bg-purple-700 py-2 rounded transition">Buy Now</button>
+    <!-- Shop Grid -->
+    <section class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      <!-- Game Card -->
+      <div class="game-card bg-gray-800 dark:bg-gray-200 p-5 rounded-2xl shadow-lg transition transform">
+        <img src="https://placehold.co/300x180" alt="Cyber Rage" class="rounded-xl mb-5 w-full object-cover" />
+        <h3 class="text-2xl font-bold dark:text-gray-900">Cyber Rage</h3>
+        <p class="text-gray-400 dark:text-gray-600 text-sm mt-1">Action RPG | 2025</p>
+        <div class="mt-4 flex items-center justify-between">
+          <p class="text-yellow-400 dark:text-yellow-600 font-extrabold text-xl">$49.99</p>
+          <button onclick="buyGame('Cyber Rage', '$49.99')" class="btn-primary px-5 py-2 rounded-full shadow-lg hover:shadow-xl">Buy Now</button>
         </div>
-      </section>
-    </div>
-  </div>
-
-  <!-- Modal -->
-  <div id="purchaseModal" class="fixed inset-0 hidden items-center justify-center z-50 modal">
-    <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-sm w-full text-center animate-bounce">
-      <h2 class="text-2xl font-bold mb-4">Confirm Purchase</h2>
-      <p id="gameTitle" class="text-lg text-purple-400 mb-2"></p>
-      <p id="gamePrice" class="text-gray-300 mb-4"></p>
-      <div class="flex justify-center space-x-4">
-        <button onclick="confirmPurchase()" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded">Confirm</button>
-        <button onclick="closeModal()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded">Cancel</button>
       </div>
+
+      <!-- Example additional cards -->
+      <div class="game-card bg-gray-800 dark:bg-gray-200 p-5 rounded-2xl shadow-lg transition transform">
+        <img src="https://placehold.co/300x180" alt="Dragon Valley" class="rounded-xl mb-5 w-full object-cover" />
+        <h3 class="text-2xl font-bold dark:text-gray-900">Dragon Valley</h3>
+        <p class="text-gray-400 dark:text-gray-600 text-sm mt-1">Fantasy MMORPG | 2024</p>
+        <div class="mt-4 flex items-center justify-between">
+          <p class="text-yellow-400 dark:text-yellow-600 font-extrabold text-xl">$39.99</p>
+          <button onclick="buyGame('Dragon Valley', '$39.99')" class="btn-primary px-5 py-2 rounded-full shadow-lg hover:shadow-xl">Buy Now</button>
+        </div>
+      </div>
+
+      <div class="game-card bg-gray-800 dark:bg-gray-200 p-5 rounded-2xl shadow-lg transition transform">
+        <img src="https://placehold.co/300x180" alt="Mecha Storm" class="rounded-xl mb-5 w-full object-cover" />
+        <h3 class="text-2xl font-bold dark:text-gray-900">Mecha Storm</h3>
+        <p class="text-gray-400 dark:text-gray-600 text-sm mt-1">Multiplayer Mech Battles | 2023</p>
+        <div class="mt-4 flex items-center justify-between">
+          <p class="text-yellow-400 dark:text-yellow-600 font-extrabold text-xl">$29.99</p>
+          <button onclick="buyGame('Mecha Storm', '$29.99')" class="btn-primary px-5 py-2 rounded-full shadow-lg hover:shadow-xl">Buy Now</button>
+        </div>
+      </div>
+
+      <div class="game-card bg-gray-800 dark:bg-gray-200 p-5 rounded-2xl shadow-lg transition transform">
+        <img src="https://placehold.co/300x180" alt="Space Odyssey" class="rounded-xl mb-5 w-full object-cover" />
+        <h3 class="text-2xl font-bold dark:text-gray-900">Space Odyssey</h3>
+        <p class="text-gray-400 dark:text-gray-600 text-sm mt-1">Space Exploration | 2022</p>
+        <div class="mt-4 flex items-center justify-between">
+          <p class="text-yellow-400 dark:text-yellow-600 font-extrabold text-xl">$24.99</p>
+          <button onclick="buyGame('Space Odyssey', '$24.99')" class="btn-primary px-5 py-2 rounded-full shadow-lg hover:shadow-xl">Buy Now</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Modal -->
+<div id="purchaseModal" class="fixed inset-0 hidden items-center justify-center z-50 modal-bg">
+  <div class="modal-content bg-gray-800 dark:bg-gray-200 p-8 rounded-3xl shadow-2xl max-w-md w-full text-center">
+    <h2 class="text-3xl font-extrabold mb-6 dark:text-gray-900">Confirm Your Purchase</h2>
+    <p id="gameTitle" class="text-2xl text-yellow-400 dark:text-yellow-600 mb-3 font-semibold"></p>
+    <p id="gamePrice" class="text-gray-300 dark:text-gray-900 mb-8 text-lg"></p>
+    <div class="flex justify-center gap-8">
+      <button onclick="confirmPurchase()" class="btn-primary px-8 py-3 rounded-full shadow-lg hover:shadow-xl">Confirm</button>
+      <button onclick="closeModal()" class="btn-secondary px-8 py-3 rounded-full shadow-lg hover:shadow-xl">Cancel</button>
     </div>
   </div>
+</div>
+
+<script>
+  // Sidebar toggle logic for mobile
+  const sidebar = document.getElementById('sidebar');
+  const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+  const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+
+  sidebarToggleBtn?.addEventListener('click', () => {
+    sidebar.classList.toggle('-translate-x-full');
+  });
+  sidebarCloseBtn?.addEventListener('click', () => {
+    sidebar.classList.add('-translate-x-full');
+  });
+
+  // Dark mode toggle
+  const themeToggleBtn = document.getElementById('themeToggleBtn');
+  const sunIcon = document.getElementById('sunIcon');
+  const moonIcon = document.getElementById('moonIcon');
+
+  function applyTheme(theme) {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+      sunIcon.classList.remove('hidden');
+      moonIcon.classList.add('hidden');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      sunIcon.classList.add('hidden');
+      moonIcon.classList.remove('hidden');
+      localStorage.setItem('theme', 'light');
+    }
+  }
+
+  function toggleTheme() {
+    const isDark = document.documentElement.classList.contains('dark');
+    applyTheme(isDark ? 'light' : 'dark');
+  }
+
+  themeToggleBtn?.addEventListener('click', toggleTheme);
+
+  const storedTheme = localStorage.getItem('theme');
+  if (storedTheme) {
+    applyTheme(storedTheme);
+  } else {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(prefersDark ? 'dark' : 'light');
+  }
+
+  // Modal purchase logic
+  const purchaseModal = document.getElementById('purchaseModal');
+  const gameTitleEl = document.getElementById('gameTitle');
+  const gamePriceEl = document.getElementById('gamePrice');
+  let selectedGame = null;
+  let selectedPrice = null;
+
+  function buyGame(title, price) {
+    selectedGame = title;
+    selectedPrice = price;
+    gameTitleEl.textContent = title;
+    gamePriceEl.textContent = price;
+    purchaseModal.classList.remove('hidden');
+    purchaseModal.classList.add('flex');
+  }
+
+  function closeModal() {
+    purchaseModal.classList.add('hidden');
+    purchaseModal.classList.remove('flex');
+  }
+
+  function confirmPurchase() {
+    alert(`You purchased ${selectedGame} for ${selectedPrice}!`);
+    closeModal();
+  }
+</script>
+
 </body>
 </html>
