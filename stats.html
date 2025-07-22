@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FluxPlay | Stats</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Orbitron', sans-serif;
+      transition: background-color 0.3s, color 0.3s;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900">
+
+<div class="min-h-screen flex flex-col lg:flex-row">
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-900 flex flex-col transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out shadow-lg">
+    <div class="flex items-center justify-between px-6 py-5 border-b border-gray-700 dark:border-gray-300">
+      <h2 class="text-3xl font-extrabold text-yellow-400 dark:text-yellow-600 tracking-wide">FluxPlay</h2>
+      <button onclick="toggleSidebar()" class="lg:hidden text-yellow-400 dark:text-yellow-600 text-2xl hover:text-yellow-300 dark:hover:text-yellow-500" aria-label="Close Sidebar">✖</button>
+    </div>
+
+    <nav class="flex flex-col mt-8 px-4 space-y-1 flex-1 overflow-y-auto">
+      <a href="dashboard.html" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-yellow-400 hover:text-gray-900 dark:hover:text-gray-100 transition font-semibold">
+        <span class="text-2xl">🎮</span> Dashboard
+      </a>
+      <a href="profile.html" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-yellow-400 hover:text-gray-900 dark:hover:text-gray-100 transition font-semibold">
+        <span class="text-2xl">👤</span> Profile
+      </a>
+      <a href="#" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-yellow-400 hover:text-gray-900 dark:hover:text-gray-100 transition font-semibold bg-yellow-400 text-gray-900 dark:bg-yellow-600 dark:text-gray-100" aria-current="page">
+        <span class="text-2xl">📊</span> Stats
+      </a>
+      <a href="logout.html" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-red-500 hover:text-gray-100 transition font-semibold text-red-400 dark:text-red-600 dark:hover:text-red-800">
+        <span class="text-2xl">🚪</span> Logout
+      </a>
+    </nav>
+
+    <div class="px-6 py-4 border-t border-gray-700 dark:border-gray-300 flex items-center justify-between">
+      <button id="themeToggleBtn" aria-label="Toggle Dark Mode" class="flex items-center gap-2 text-yellow-400 dark:text-yellow-600 hover:text-yellow-300 dark:hover:text-yellow-500 font-semibold transition">
+        <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364-6.364l-1.414 1.414M7.05 16.95l-1.414 1.414M16.95 16.95l1.414 1.414M7.05 7.05L5.636 5.636M12 7a5 5 0 110 10 5 5 0 010-10z" />
+        </svg>
+        <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M17.293 13.293a8 8 0 11-10.586-10.586 7 7 0 0010.586 10.586z" />
+        </svg>
+        <span>Dark Mode</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 ml-0 lg:ml-64 p-8 pt-24 lg:pt-8 overflow-y-auto transition-colors duration-300">
+
+    <!-- Mobile Top Bar -->
+    <header class="fixed top-0 left-0 right-0 bg-gray-900 dark:bg-gray-100 border-b border-gray-700 dark:border-gray-300 p-4 flex items-center justify-between lg:hidden z-40">
+      <button onclick="toggleSidebar()" class="text-yellow-400 dark:text-yellow-600 text-3xl" aria-label="Open Sidebar">☰</button>
+      <h1 class="text-xl font-bold">FluxPlay</h1>
+      <div></div>
+    </header>
+
+    <section class="max-w-5xl mx-auto">
+      <h1 class="text-4xl font-extrabold mb-8 tracking-wide">Stats</h1>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div class="bg-gray-800 dark:bg-gray-200 rounded-xl p-6 shadow-lg transition-colors">
+          <h2 class="text-2xl font-semibold mb-6 dark:text-gray-900">Games Played Over Time</h2>
+          <canvas id="gamesPlayedChart"></canvas>
+        </div>
+        <div class="bg-gray-800 dark:bg-gray-200 rounded-xl p-6 shadow-lg transition-colors">
+          <h2 class="text-2xl font-semibold mb-6 dark:text-gray-900">Trophies Earned</h2>
+          <canvas id="trophiesChart"></canvas>
+        </div>
+      </div>
+
+      <div class="mt-12 bg-gray-800 dark:bg-gray-200 rounded-xl p-6 shadow-lg transition-colors">
+        <h2 class="text-2xl font-semibold mb-6 dark:text-gray-900">Online Hours Distribution</h2>
+        <canvas id="onlineHoursChart"></canvas>
+      </div>
+
+    </section>
+  </main>
+</div>
+
+<script src="app.js" defer></script>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    // Games Played Over Time - Line Chart
+    const ctx1 = document.getElementById('gamesPlayedChart').getContext('2d');
+    new Chart(ctx1, {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+        datasets: [{
+          label: 'Games Played',
+          data: [12, 19, 8, 24, 32, 28, 40],
+          fill: true,
+          borderColor: '#7c3aed',
+          backgroundColor: 'rgba(124, 58, 237, 0.3)',
+          tension: 0.3,
+          pointBackgroundColor: '#7c3aed'
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true }
+        },
+        plugins: { legend: { labels: { color: 'black' } } }
+      }
+    });
+
+    // Trophies Earned - Bar Chart
+    const ctx2 = document.getElementById('trophiesChart').getContext('2d');
+    new Chart(ctx2, {
+      type: 'bar',
+      data: {
+        labels: ['Cyber Arena', 'Dragon Valley', 'Mecha Storm'],
+        datasets: [{
+          label: 'Trophies',
+          data: [15, 10, 7],
+          backgroundColor: ['#db2777', '#f97316', '#facc15']
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true }
+        },
+        plugins: { legend: { display: false } }
+      }
+    });
+
+    // Online Hours Distribution - Doughnut Chart
+    const ctx3 = document.getElementById('onlineHoursChart').getContext('2d');
+    new Chart(ctx3, {
+      type: 'doughnut',
+      data: {
+        labels: ['Cyber Arena', 'Dragon Valley', 'Mecha Storm'],
+        datasets: [{
+          label: 'Online Hours',
+          data: [250, 300, 162],
+          backgroundColor: ['#eab308', '#f97316', '#7c3aed']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'right' } }
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
