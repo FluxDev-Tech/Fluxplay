@@ -14,29 +14,54 @@
   </style>
 </head>
 <body class="bg-gray-900 text-white font-[Orbitron]">
-  <!-- Header -->
-  <header class="flex items-center justify-between px-6 py-4 bg-gray-800 shadow">
-    <h1 class="text-2xl font-bold">🛒 FluxPlay Game Shop</h1>
-    <nav class="space-x-6">
-      <a href="home.html" class="hover:text-purple-400">Home</a>
-      <a href="shop.html" class="hover:text-purple-400">Shop</a>
-      <a href="dashboard.html" class="hover:text-purple-400">Dashboard</a>
-    </nav>
-  </header>
 
-  <!-- Shop Grid -->
-  <section class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
-    <!-- Game Card Example -->
-    <div class="bg-gray-800 p-4 rounded-xl shadow hover:shadow-xl transition-all transform hover:scale-105">
-      <img src="https://placehold.co/300x180" alt="Game Cover" class="rounded mb-3 w-full" />
-      <h3 class="text-xl font-semibold">Cyber Rage</h3>
-      <p class="text-gray-400 text-sm">Action RPG | 2025</p>
-      <p class="mt-2 text-purple-400 font-bold">$49.99</p>
-      <button onclick="buyGame('Cyber Rage', '$49.99')" class="mt-4 w-full bg-purple-600 hover:bg-purple-700 py-2 rounded transition">Buy Now</button>
+  <!-- Sidebar (Responsive) -->
+  <div class="flex">
+    <!-- Sidebar Container -->
+    <aside id="sidebar" class="bg-gray-800 w-64 h-screen fixed top-0 left-0 z-40 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+      <div class="p-6">
+        <h2 class="text-2xl font-bold text-purple-500 mb-6">🎮 FluxPlay</h2>
+        <nav class="space-y-4">
+          <a href="home.html" class="block text-white hover:text-purple-400 transition">🏠 Home</a>
+          <a href="shop.html" class="block text-white hover:text-purple-400 transition">🛒 Shop</a>
+          <a href="dashboard.html" class="block text-white hover:text-purple-400 transition">📊 Dashboard</a>
+          <a href="profile.html" class="block text-white hover:text-purple-400 transition">👤 Profile</a>
+          <a href="stats.html" class="block text-white hover:text-purple-400 transition">📈 Stats</a>
+          <a href="logout.html" class="block text-red-400 hover:text-red-500 transition">🚪 Logout</a>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Toggle Button (Mobile) -->
+    <button id="sidebarToggleBtn" class="md:hidden fixed top-4 left-4 z-50 p-2 bg-purple-600 text-white rounded shadow-lg">
+      ☰
+    </button>
+
+    <!-- Page Content -->
+    <div class="flex-1 ml-0 md:ml-64 w-full min-h-screen">
+      <!-- Header -->
+      <header class="flex items-center justify-between px-6 py-4 bg-gray-800 shadow">
+        <h1 class="text-2xl font-bold">🛒 FluxPlay Game Shop</h1>
+        <nav class="space-x-6 hidden md:flex">
+          <a href="home.html" class="hover:text-purple-400">Home</a>
+          <a href="shop.html" class="hover:text-purple-400">Shop</a>
+          <a href="dashboard.html" class="hover:text-purple-400">Dashboard</a>
+        </nav>
+      </header>
+
+      <!-- Shop Grid -->
+      <section class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
+        <!-- Game Card -->
+        <div class="bg-gray-800 p-4 rounded-xl shadow hover:shadow-xl transition-all transform hover:scale-105">
+          <img src="https://placehold.co/300x180" alt="Game Cover" class="rounded mb-3 w-full" />
+          <h3 class="text-xl font-semibold">Cyber Rage</h3>
+          <p class="text-gray-400 text-sm">Action RPG | 2025</p>
+          <p class="mt-2 text-purple-400 font-bold">$49.99</p>
+          <button onclick="buyGame('Cyber Rage', '$49.99')" class="mt-4 w-full bg-purple-600 hover:bg-purple-700 py-2 rounded transition">Buy Now</button>
+        </div>
+      </section>
     </div>
-
-    <!-- More game cards can be added here... -->
-  </section>
+  </div>
 
   <!-- Modal -->
   <div id="purchaseModal" class="fixed inset-0 hidden items-center justify-center z-50 modal">
