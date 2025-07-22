@@ -6,7 +6,7 @@
   <title>FluxPlay | Login</title>
 
   <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
   <!-- Orbitron Font -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet" />
 
@@ -14,26 +14,45 @@
     body {
       font-family: 'Orbitron', sans-serif;
     }
+    /* Fade-in animation for forms */
     .animate-fadeIn {
       animation: fadeIn 0.5s ease-in-out;
     }
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
-<body class="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white transition duration-300">
 
-  <main class="w-full max-w-md bg-gray-900/90 backdrop-blur-sm rounded-3xl shadow-xl border border-yellow-500 p-10">
-    <h1 class="text-5xl font-extrabold text-center text-yellow-400 mb-10 tracking-wide">FluxPlay</h1>
+<body
+  class="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white transition duration-300"
+>
+  <main
+    class="w-full max-w-md bg-gray-900/95 backdrop-blur-lg p-10 rounded-3xl shadow-xl border border-yellow-500"
+  >
+    <h1 class="text-4xl font-extrabold text-center text-yellow-400 mb-10 tracking-wide">
+      FluxPlay
+    </h1>
 
     <!-- Tabs -->
     <div class="flex justify-center mb-8 space-x-6">
-      <button id="loginTab" class="tab-btn px-8 py-3 rounded-full font-semibold text-lg bg-yellow-400 text-gray-900 shadow-lg hover:bg-yellow-500 transition">
+      <button
+        id="loginTab"
+        class="tab-btn px-8 py-3 rounded-full font-semibold text-lg bg-yellow-400 text-gray-900 shadow-lg transition duration-300"
+      >
         Login
       </button>
-      <button id="registerTab" class="tab-btn px-8 py-3 rounded-full font-semibold text-lg bg-gray-700 hover:bg-gray-600 transition">
+      <button
+        id="registerTab"
+        class="tab-btn px-8 py-3 rounded-full font-semibold text-lg bg-gray-700 hover:bg-gray-600 text-white transition duration-300"
+      >
         Register
       </button>
     </div>
@@ -42,52 +61,98 @@
     <form id="loginForm" class="form-section flex flex-col gap-6 animate-fadeIn" novalidate>
       <label class="flex flex-col text-sm font-medium text-gray-300">
         Username
-        <input id="loginUsername" name="username" type="text" required placeholder="Enter username"
-          class="mt-2 px-5 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition" />
+        <input
+          id="username"
+          name="username"
+          type="text"
+          required
+          placeholder="Enter username"
+          class="mt-2 px-5 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-yellow-400 focus:ring-opacity-60"
+        />
       </label>
 
       <label class="flex flex-col text-sm font-medium text-gray-300">
         Password
-        <input id="loginPassword" name="password" type="password" required placeholder="Enter password"
-          class="mt-2 px-5 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition" />
+        <input
+          id="password"
+          name="password"
+          type="password"
+          required
+          placeholder="Enter password"
+          class="mt-2 px-5 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-yellow-400 focus:ring-opacity-60"
+        />
       </label>
 
-      <button type="submit" class="bg-yellow-400 text-gray-900 font-extrabold py-4 rounded-2xl hover:bg-yellow-500 shadow-lg transition">
+      <button
+        type="submit"
+        class="mt-4 bg-yellow-400 text-gray-900 font-extrabold py-4 rounded-2xl hover:bg-yellow-500 transition duration-300 shadow-md"
+      >
         Login
       </button>
 
-      <p class="text-center text-xs text-gray-400 mt-3">
-        Try: <code class="bg-gray-800 px-2 py-1 rounded">player</code> / <code class="bg-gray-800 px-2 py-1 rounded">1234</code>
+      <p class="text-center text-xs text-gray-400 mt-2">
+        Try: <code>player</code> / <code>1234</code>
       </p>
     </form>
 
     <!-- Register Form -->
-    <form id="registerForm" class="form-section hidden flex-col gap-6 animate-fadeIn" novalidate>
+    <form
+      id="registerForm"
+      class="form-section hidden flex flex-col gap-6 animate-fadeIn"
+      novalidate
+    >
       <label class="flex flex-col text-sm font-medium text-gray-300">
         Full Name
-        <input id="regFullName" name="fullname" type="text" required placeholder="Your full name"
-          class="mt-2 px-5 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition" />
+        <input
+          id="regFullName"
+          name="fullname"
+          type="text"
+          required
+          placeholder="Your full name"
+          class="mt-2 px-5 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-yellow-400 focus:ring-opacity-60"
+        />
       </label>
 
       <label class="flex flex-col text-sm font-medium text-gray-300">
         Username
-        <input id="regUsername" name="username" type="text" required placeholder="Choose a username"
-          class="mt-2 px-5 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition" />
+        <input
+          id="regUsername"
+          name="username"
+          type="text"
+          required
+          placeholder="Choose a username"
+          class="mt-2 px-5 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-yellow-400 focus:ring-opacity-60"
+        />
       </label>
 
       <label class="flex flex-col text-sm font-medium text-gray-300">
         Email
-        <input id="regEmail" name="email" type="email" required placeholder="Your email address"
-          class="mt-2 px-5 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition" />
+        <input
+          id="regEmail"
+          name="email"
+          type="email"
+          required
+          placeholder="Your email address"
+          class="mt-2 px-5 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-yellow-400 focus:ring-opacity-60"
+        />
       </label>
 
       <label class="flex flex-col text-sm font-medium text-gray-300">
         Password
-        <input id="regPassword" name="password" type="password" required placeholder="Create a strong password"
-          class="mt-2 px-5 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition" />
+        <input
+          id="regPassword"
+          name="password"
+          type="password"
+          required
+          placeholder="Create a strong password"
+          class="mt-2 px-5 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-yellow-400 focus:ring-opacity-60"
+        />
       </label>
 
-      <button type="submit" class="bg-yellow-400 text-gray-900 font-extrabold py-4 rounded-2xl hover:bg-yellow-500 shadow-lg transition">
+      <button
+        type="submit"
+        class="mt-4 bg-yellow-400 text-gray-900 font-extrabold py-4 rounded-2xl hover:bg-yellow-500 transition duration-300 shadow-md"
+      >
         Create Account
       </button>
     </form>
