@@ -5,9 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (protectedPages.includes(currentPage)) {
     if (localStorage.getItem('isLoggedIn') !== 'true') {
-      // Redirect to login if not logged in
       window.location.href = 'login.html';
-      return; // Stop running further code
+      return;
     }
   }
 
@@ -19,11 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function toggleSidebar() {
     sidebar?.classList.toggle('open');
   }
-
   sidebarToggleBtn?.addEventListener('click', toggleSidebar);
-  sidebarCloseBtn?.addEventListener('click', () => {
-    sidebar?.classList.remove('open');
-  });
+  sidebarCloseBtn?.addEventListener('click', () => sidebar?.classList.remove('open'));
 
   document.addEventListener('click', (e) => {
     if (
@@ -54,20 +50,16 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('theme', 'light');
     }
   }
-
   function toggleTheme() {
-    const isDark = document.documentElement.classList.contains('dark');
-    applyTheme(isDark ? 'light' : 'dark');
+    applyTheme(document.documentElement.classList.contains('dark') ? 'light' : 'dark');
   }
-
   themeToggleBtn?.addEventListener('click', toggleTheme);
 
   const storedTheme = localStorage.getItem('theme');
   if (storedTheme) {
     applyTheme(storedTheme);
   } else {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    applyTheme(prefersDark ? 'dark' : 'light');
+    applyTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   }
 
   // ===== PROFILE FORM =====
@@ -123,9 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ===== LOGOUT PAGE HANDLER =====
   if (window.location.pathname.includes('logout.html')) {
     localStorage.clear();
-    setTimeout(() => {
-      window.location.href = 'login.html';
-    }, 1000);
+    setTimeout(() => window.location.href = 'login.html', 1000);
   }
 
   // ===== LOGIN FORM =====
@@ -139,6 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (username === 'player' && password === '1234') {
         localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('username', username);
         window.location.href = 'dashboard.html';
       } else {
         alert('Invalid login!');
@@ -153,7 +144,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const game = button.getAttribute('data-game');
       const price = button.getAttribute('data-price');
       alert(`You bought "${game}" for $${price}. Thank you!`);
-      // Extend here for real cart or payment integration
     });
   });
 });
