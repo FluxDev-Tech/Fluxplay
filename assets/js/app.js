@@ -85,7 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
 
-      // Check user from stored users
       const users = JSON.parse(localStorage.getItem('users')) || [];
       const user = users.find(u => u.username === username && u.password === password);
 
@@ -124,17 +123,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
 
   function openSidebar() {
-    sidebar.classList.remove('-translate-x-full');
-    sidebar.classList.add('translate-x-0');
+    sidebar?.classList.remove('-translate-x-full');
+    sidebar?.classList.add('translate-x-0');
   }
 
   function closeSidebar() {
-    sidebar.classList.add('-translate-x-full');
-    sidebar.classList.remove('translate-x-0');
+    sidebar?.classList.add('-translate-x-full');
+    sidebar?.classList.remove('translate-x-0');
   }
 
   function toggleSidebar() {
-    if (sidebar.classList.contains('-translate-x-full')) {
+    if (sidebar?.classList.contains('-translate-x-full')) {
       openSidebar();
     } else {
       closeSidebar();
@@ -144,10 +143,9 @@ document.addEventListener('DOMContentLoaded', () => {
   sidebarToggleBtn?.addEventListener('click', openSidebar);
   sidebarCloseBtn?.addEventListener('click', closeSidebar);
 
-  // Close sidebar if clicking outside on mobile
   document.addEventListener('click', (e) => {
     if (
-      sidebar.classList.contains('translate-x-0') &&
+      sidebar?.classList.contains('translate-x-0') &&
       !sidebar.contains(e.target) &&
       !sidebarToggleBtn.contains(e.target)
     ) {
@@ -189,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
     applyTheme(prefersDark ? 'dark' : 'light');
   }
 
-  // ===== STATS PAGE DATA =====
+  // ===== STATS PAGE DUMMY DATA =====
   if (page === 'stats.html') {
     const stats = {
       gamesPlayed: 120,
@@ -207,5 +205,32 @@ document.addEventListener('DOMContentLoaded', () => {
       if (el) el.textContent = value;
     }
   }
+
+  // ===== SHOP MODAL FUNCTIONALITY =====
+  const purchaseModal = document.getElementById('purchaseModal');
+  const gameTitle = document.getElementById('gameTitle');
+  const gamePrice = document.getElementById('gamePrice');
+  const confirmBtn = document.getElementById('confirmPurchaseBtn');
+  const cancelBtn = document.getElementById('cancelPurchaseBtn');
+
+  window.buyGame = (title, price) => {
+    if (purchaseModal && gameTitle && gamePrice) {
+      purchaseModal.classList.remove('hidden');
+      gameTitle.textContent = title;
+      gamePrice.textContent = `Price: ${price}`;
+    }
+  };
+
+  window.confirmPurchase = () => {
+    alert("🎉 Thank you for purchasing!");
+    purchaseModal?.classList.add('hidden');
+  };
+
+  window.closeModal = () => {
+    purchaseModal?.classList.add('hidden');
+  };
+
+  confirmBtn?.addEventListener('click', window.confirmPurchase);
+  cancelBtn?.addEventListener('click', window.closeModal);
 });
     
