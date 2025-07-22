@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
       globalRank: '#432',
       tier: 'Diamond',
       tournaments: 4,
-      activeSince: 'Mar 2023'
+      activeSince: 'Jul 25, 2025'
     };
 
     for (const [key, value] of Object.entries(stats)) {
