@@ -18,8 +18,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function toggleSidebar() {
     sidebar?.classList.toggle('open');
   }
+
   sidebarToggleBtn?.addEventListener('click', toggleSidebar);
-  sidebarCloseBtn?.addEventListener('click', () => sidebar?.classList.remove('open'));
+  sidebarCloseBtn?.addEventListener('click', () => {
+    sidebar?.classList.remove('open');
+  });
 
   document.addEventListener('click', (e) => {
     if (
@@ -50,16 +53,20 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('theme', 'light');
     }
   }
+
   function toggleTheme() {
-    applyTheme(document.documentElement.classList.contains('dark') ? 'light' : 'dark');
+    const isDark = document.documentElement.classList.contains('dark');
+    applyTheme(isDark ? 'light' : 'dark');
   }
+
   themeToggleBtn?.addEventListener('click', toggleTheme);
 
   const storedTheme = localStorage.getItem('theme');
   if (storedTheme) {
     applyTheme(storedTheme);
   } else {
-    applyTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(prefersDark ? 'dark' : 'light');
   }
 
   // ===== PROFILE FORM =====
@@ -115,7 +122,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // ===== LOGOUT PAGE HANDLER =====
   if (window.location.pathname.includes('logout.html')) {
     localStorage.clear();
-    setTimeout(() => window.location.href = 'login.html', 1000);
+    setTimeout(() => {
+      window.location.href = 'login.html';
+    }, 1000);
   }
 
   // ===== LOGIN FORM =====
@@ -129,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (username === 'player' && password === '1234') {
         localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('username', username);
+        localStorage.setItem('profile', JSON.stringify({ username }));
         window.location.href = 'dashboard.html';
       } else {
         alert('Invalid login!');
@@ -147,3 +156,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+      
