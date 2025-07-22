@@ -85,10 +85,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
 
-      if (username === 'admin' && password === 'player1') {
+      // Check user from stored users
+      const users = JSON.parse(localStorage.getItem('users')) || [];
+      const user = users.find(u => u.username === username && u.password === password);
+
+      if (user) {
         alert('Login successful!');
         localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('profile', JSON.stringify({ username: 'admin', email: 'admin@fluxplay.com' }));
+        localStorage.setItem('profile', JSON.stringify({ username: user.username, email: user.email }));
         window.location.href = 'dashboard.html';
       } else {
         alert('Incorrect username or password.');
@@ -97,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ===== SHOW PROFILE USERNAME =====
-  if (['dashboard.html', 'stats.html'].includes(page)) {
+  if (['dashboard.html', 'profile.html', 'stats.html'].includes(page)) {
     const profile = JSON.parse(localStorage.getItem('profile'));
     const displayName = document.getElementById('displayName');
     if (displayName && profile?.username) {
@@ -105,12 +109,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ===== LOGOUT FUNCTION =====
-  if (page === 'logout.html') {
-    localStorage.clear();
-    setTimeout(() => {
+  // ===== LOGOUT BUTTON =====
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      localStorage.clear();
       window.location.href = 'login.html';
-    }, 500);
+    });
   }
 
   // ===== SIDEBAR TOGGLE =====
@@ -197,9 +202,10 @@ document.addEventListener('DOMContentLoaded', () => {
       activeSince: 'Mar 2023'
     };
 
-    for (const [key, id] of Object.entries(stats)) {
-      const el = document.getElementById(id);
-      if (el) el.textContent = stats[key];
+    for (const [key, value] of Object.entries(stats)) {
+      const el = document.getElementById(key);
+      if (el) el.textContent = value;
     }
   }
 });
+    
