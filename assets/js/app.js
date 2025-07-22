@@ -1,17 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
   const page = window.location.pathname.split('/').pop();
 
-  // ==== LOGIN CHECK FOR PROTECTED PAGES ====
+  // ==== PROTECTED PAGE CHECK ====
   const protectedPages = ['dashboard.html', 'profile.html'];
   if (protectedPages.includes(page)) {
-    const loggedIn = localStorage.getItem('isLoggedIn');
-    if (loggedIn !== 'true') {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    if (isLoggedIn !== 'true') {
       window.location.href = 'login.html';
       return;
     }
   }
 
-  // ==== TAB SWITCHING (Login/Register) ====
+  // ==== TOGGLE LOGIN/REGISTER FORM ====
   const loginTab = document.getElementById('loginTab');
   const registerTab = document.getElementById('registerTab');
   const loginForm = document.getElementById('loginForm');
@@ -33,56 +33,64 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ==== REGISTER FORM FUNCTIONALITY ====
+  // ==== REGISTER FORM SUBMIT ====
   if (registerForm) {
     registerForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const username = registerForm.regUsername.value.trim();
-      const email = registerForm.regEmail.value.trim();
-      const password = registerForm.regPassword.value.trim();
 
-      if (!username || !email || !password) {
-        alert('Please fill all fields.');
+      const username = document.getElementById('regUsername').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPassword').value.trim();
+      const confirmPassword = document.getElementById('regConfirmPassword')?.value.trim();
+
+      if (!username || !email || !password || !confirmPassword) {
+        alert('Please fill in all fields.');
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        alert('Passwords do not match.');
         return;
       }
 
       const users = JSON.parse(localStorage.getItem('users')) || [];
-      if (users.find((u) => u.username === username)) {
-        alert('Username already exists.');
+      const userExists = users.some(user => user.username === username || user.email === email);
+
+      if (userExists) {
+        alert('Username or email already registered.');
         return;
       }
 
       users.push({ username, email, password });
       localStorage.setItem('users', JSON.stringify(users));
 
-      alert('Registration successful! Please log in.');
-      loginTab.click();
+      alert('Registration successful! You can now login.');
+      loginTab?.click();
     });
   }
 
-  // ==== LOGIN FORM FUNCTIONALITY ====
+  // ==== LOGIN FORM SUBMIT ====
   if (loginForm) {
     loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
+
       const username = loginForm.username.value.trim();
       const password = loginForm.password.value.trim();
 
       const users = JSON.parse(localStorage.getItem('users')) || [];
-      const user = users.find(
-        (u) => u.username === username && u.password === password
-      );
+      const user = users.find(u => u.username === username && u.password === password);
 
       if (user) {
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('profile', JSON.stringify(user));
         window.location.href = 'dashboard.html';
       } else {
-        alert('Invalid login credentials.');
+        alert('Invalid username or password');
       }
     });
   }
 
-  // ==== DASHBOARD PROFILE LOADING ====
+  // ==== DASHBOARD: SHOW PROFILE NAME ====
   if (page === 'dashboard.html') {
     const profile = JSON.parse(localStorage.getItem('profile'));
     const displayName = document.getElementById('displayName');
@@ -91,12 +99,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ==== LOGOUT FUNCTIONALITY ====
+  // ==== LOGOUT HANDLER ====
   if (page === 'logout.html') {
     localStorage.clear();
     setTimeout(() => {
       window.location.href = 'login.html';
-    }, 1000);
+    }, 500);
   }
 
   // ==== SIDEBAR TOGGLE ====
