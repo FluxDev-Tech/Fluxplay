@@ -30,22 +30,17 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Get existing users from localStorage or empty array
       const users = JSON.parse(localStorage.getItem('users')) || [];
 
-      // Check if username or email already exists
-      const usernameExists = users.some(u => u.username === username);
-      const emailExists = users.some(u => u.email === email);
-      if (usernameExists) {
+      if (users.some(u => u.username === username)) {
         alert('Username already taken.');
         return;
       }
-      if (emailExists) {
+      if (users.some(u => u.email === email)) {
         alert('Email already registered.');
         return;
       }
 
-      // Add new user
       users.push({ username, email, password });
       localStorage.setItem('users', JSON.stringify(users));
 
@@ -63,10 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const username = loginForm.username.value.trim();
       const password = loginForm.password.value.trim();
 
-      // Get users from localStorage
       const users = JSON.parse(localStorage.getItem('users')) || [];
 
-      // Find user with matching username and password
       const user = users.find(u => u.username === username && u.password === password);
 
       if (user) {
@@ -98,18 +91,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1000);
   }
 
-  // ===== SIDEBAR TOGGLE (mobile) =====
+  // ===== SIDEBAR TOGGLE (dashboard.html) =====
   const sidebar = document.getElementById('sidebar');
   const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
   const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
 
   function toggleSidebar() {
-    sidebar?.classList.toggle('open');
+    if (sidebar) {
+      sidebar.classList.toggle('open');
+    }
   }
 
-  sidebarToggleBtn?.addEventListener('click', toggleSidebar);
-  sidebarCloseBtn?.addEventListener('click', () => {
-    sidebar?.classList.remove('open');
+  if (sidebarToggleBtn) sidebarToggleBtn.addEventListener('click', toggleSidebar);
+  if (sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', () => {
+    if (sidebar) sidebar.classList.remove('open');
   });
 
   document.addEventListener('click', (e) => {
@@ -117,6 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
       sidebar &&
       sidebar.classList.contains('open') &&
       !sidebar.contains(e.target) &&
+      sidebarToggleBtn &&
       !sidebarToggleBtn.contains(e.target)
     ) {
       sidebar.classList.remove('open');
@@ -147,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
     applyTheme(isDark ? 'light' : 'dark');
   }
 
-  themeToggleBtn?.addEventListener('click', toggleTheme);
+  if (themeToggleBtn) themeToggleBtn.addEventListener('click', toggleTheme);
 
   const storedTheme = localStorage.getItem('theme');
   if (storedTheme) {
@@ -218,4 +214,4 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 });
-      
+        
