@@ -76,8 +76,10 @@ if (profileForm) {
     localStorage.setItem('profile', JSON.stringify(profile));
 
     // Update display
-    document.getElementById('displayName').textContent = username;
-    document.getElementById('displayRole').textContent = profile.role;
+    const displayName = document.getElementById('displayName');
+    const displayRole = document.getElementById('displayRole');
+    if (displayName) displayName.textContent = username;
+    if (displayRole) displayRole.textContent = profile.role;
 
     alert('Profile saved successfully!');
   });
@@ -171,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userFound) {
       alert(`Welcome back, ${username}!`);
       loginForm.reset();
-      // Redirect example:
+      // Uncomment below to redirect after login
       // window.location.href = 'dashboard.html';
     } else {
       alert('Invalid username or password.');
