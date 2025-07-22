@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
   const page = window.location.pathname.split('/').pop();
 
-  // ==== PROTECTED PAGE CHECK ====
-  const protectedPages = ['dashboard.html', 'profile.html'];
+  // ==== PROTECTED PAGES ====
+  const protectedPages = ['dashboard.html', 'profile.html', 'stats.html'];
   if (protectedPages.includes(page)) {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     if (isLoggedIn !== 'true') {
@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ==== TOGGLE LOGIN/REGISTER FORM ====
+  // ==== LOGIN / REGISTER FORM TOGGLER ====
   const loginTab = document.getElementById('loginTab');
   const registerTab = document.getElementById('registerTab');
   const loginForm = document.getElementById('loginForm');
@@ -31,6 +31,16 @@ document.addEventListener('DOMContentLoaded', () => {
       registerTab.classList.add('bg-yellow-400', 'text-gray-900');
       loginTab.classList.remove('bg-yellow-400', 'text-gray-900');
     });
+  }
+
+  // ==== Default Account (admin / player1) ====
+  const defaultUsers = [
+    { username: 'admin', email: 'admin@example.com', password: 'player1' }
+  ];
+
+  const existingUsers = JSON.parse(localStorage.getItem('users')) || [];
+  if (!existingUsers.some(u => u.username === 'admin')) {
+    localStorage.setItem('users', JSON.stringify([...defaultUsers, ...existingUsers]));
   }
 
   // ==== REGISTER FORM SUBMIT ====
@@ -91,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==== DASHBOARD: SHOW PROFILE NAME ====
-  if (page === 'dashboard.html') {
+  if (page === 'dashboard.html' || page === 'stats.html') {
     const profile = JSON.parse(localStorage.getItem('profile'));
     const displayName = document.getElementById('displayName');
     if (displayName && profile?.username) {
@@ -164,5 +174,35 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     applyTheme(prefersDark ? 'dark' : 'light');
+  }
+
+  // ==== STATS PAGE FILLER ====
+  if (page === 'stats.html') {
+    const stats = {
+      gamesPlayed: 120,
+      wins: 85,
+      winRate: '70.8%',
+      avgGameTime: '23 mins',
+      rank: '#432',
+      tier: 'Diamond',
+      tournaments: 4,
+      activeSince: 'Mar 2023'
+    };
+
+    const map = {
+      gamesPlayed: 'gamesPlayed',
+      wins: 'wins',
+      winRate: 'winRate',
+      avgGameTime: 'avgGameTime',
+      rank: 'globalRank',
+      tier: 'tier',
+      tournaments: 'tournaments',
+      activeSince: 'activeSince'
+    };
+
+    for (const [key, id] of Object.entries(map)) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = stats[key];
+    }
   }
 });
