@@ -1,110 +1,116 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const currentPage = window.location.pathname.split('/').pop();
+  const page = window.location.pathname.split('/').pop();
 
-  // ===== LOGIN CHECK FOR PROTECTED PAGES =====
+  // ==== LOGIN CHECK FOR PROTECTED PAGES ====
   const protectedPages = ['dashboard.html', 'profile.html'];
-  if (protectedPages.includes(currentPage)) {
-    if (localStorage.getItem('isLoggedIn') !== 'true') {
+  if (protectedPages.includes(page)) {
+    const loggedIn = localStorage.getItem('isLoggedIn');
+    if (loggedIn !== 'true') {
       window.location.href = 'login.html';
       return;
     }
   }
 
-  // ===== REGISTER FORM HANDLER (register.html) =====
+  // ==== TAB SWITCHING (Login/Register) ====
+  const loginTab = document.getElementById('loginTab');
+  const registerTab = document.getElementById('registerTab');
+  const loginForm = document.getElementById('loginForm');
   const registerForm = document.getElementById('registerForm');
+
+  if (loginTab && registerTab && loginForm && registerForm) {
+    loginTab.addEventListener('click', () => {
+      loginForm.classList.remove('hidden');
+      registerForm.classList.add('hidden');
+      loginTab.classList.add('bg-yellow-400', 'text-gray-900');
+      registerTab.classList.remove('bg-yellow-400', 'text-gray-900');
+    });
+
+    registerTab.addEventListener('click', () => {
+      registerForm.classList.remove('hidden');
+      loginForm.classList.add('hidden');
+      registerTab.classList.add('bg-yellow-400', 'text-gray-900');
+      loginTab.classList.remove('bg-yellow-400', 'text-gray-900');
+    });
+  }
+
+  // ==== REGISTER FORM FUNCTIONALITY ====
   if (registerForm) {
     registerForm.addEventListener('submit', (e) => {
       e.preventDefault();
+      const username = registerForm.regUsername.value.trim();
+      const email = registerForm.regEmail.value.trim();
+      const password = registerForm.regPassword.value.trim();
 
-      const username = registerForm.username.value.trim();
-      const email = registerForm.email.value.trim();
-      const password = registerForm.password.value.trim();
-      const confirmPassword = registerForm.confirmPassword.value.trim();
-
-      if (!username || !email || !password || !confirmPassword) {
-        alert('Please fill in all fields.');
-        return;
-      }
-      if (password !== confirmPassword) {
-        alert('Passwords do not match!');
+      if (!username || !email || !password) {
+        alert('Please fill all fields.');
         return;
       }
 
       const users = JSON.parse(localStorage.getItem('users')) || [];
-
-      if (users.some(u => u.username === username)) {
-        alert('Username already taken.');
-        return;
-      }
-      if (users.some(u => u.email === email)) {
-        alert('Email already registered.');
+      if (users.find((u) => u.username === username)) {
+        alert('Username already exists.');
         return;
       }
 
       users.push({ username, email, password });
       localStorage.setItem('users', JSON.stringify(users));
 
-      alert('Registration successful! Please login.');
-      window.location.href = 'login.html';
+      alert('Registration successful! Please log in.');
+      loginTab.click();
     });
   }
 
-  // ===== LOGIN FORM HANDLER (login.html) =====
-  const loginForm = document.getElementById('loginForm');
+  // ==== LOGIN FORM FUNCTIONALITY ====
   if (loginForm) {
     loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
-
       const username = loginForm.username.value.trim();
       const password = loginForm.password.value.trim();
 
       const users = JSON.parse(localStorage.getItem('users')) || [];
-
-      const user = users.find(u => u.username === username && u.password === password);
+      const user = users.find(
+        (u) => u.username === username && u.password === password
+      );
 
       if (user) {
         localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('profile', JSON.stringify({ username: user.username, email: user.email }));
+        localStorage.setItem('profile', JSON.stringify(user));
         window.location.href = 'dashboard.html';
       } else {
-        alert('Invalid username or password');
+        alert('Invalid login credentials.');
       }
     });
   }
 
-  // ===== DASHBOARD PROFILE LOADING (dashboard.html) =====
-  if (currentPage === 'dashboard.html') {
-    if (localStorage.getItem('isLoggedIn') === 'true') {
-      const profile = JSON.parse(localStorage.getItem('profile')) || {};
-      const displayName = document.getElementById('displayName');
-      if (displayName && profile.username) {
-        displayName.textContent = profile.username;
-      }
+  // ==== DASHBOARD PROFILE LOADING ====
+  if (page === 'dashboard.html') {
+    const profile = JSON.parse(localStorage.getItem('profile'));
+    const displayName = document.getElementById('displayName');
+    if (displayName && profile?.username) {
+      displayName.textContent = profile.username;
     }
   }
 
-  // ===== LOGOUT PAGE HANDLER (logout.html) =====
-  if (currentPage === 'logout.html') {
+  // ==== LOGOUT FUNCTIONALITY ====
+  if (page === 'logout.html') {
     localStorage.clear();
     setTimeout(() => {
       window.location.href = 'login.html';
     }, 1000);
   }
 
-  // ===== SIDEBAR TOGGLE (dashboard.html) =====
+  // ==== SIDEBAR TOGGLE ====
   const sidebar = document.getElementById('sidebar');
   const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
   const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
 
   function toggleSidebar() {
-    if (sidebar) {
-      sidebar.classList.toggle('open');
-    }
+    sidebar?.classList.toggle('open');
   }
 
-  if (sidebarToggleBtn) sidebarToggleBtn.addEventListener('click', toggleSidebar);
-  if (sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', () => {
-    if (sidebar) sidebar.classList.remove('open');
+  sidebarToggleBtn?.addEventListener('click', toggleSidebar);
+  sidebarCloseBtn?.addEventListener('click', () => {
+    sidebar?.classList.remove('open');
   });
 
   document.addEventListener('click', (e) => {
@@ -112,14 +118,13 @@ document.addEventListener('DOMContentLoaded', () => {
       sidebar &&
       sidebar.classList.contains('open') &&
       !sidebar.contains(e.target) &&
-      sidebarToggleBtn &&
       !sidebarToggleBtn.contains(e.target)
     ) {
       sidebar.classList.remove('open');
     }
   });
 
-  // ===== THEME TOGGLE =====
+  // ==== THEME TOGGLE ====
   const themeToggleBtn = document.getElementById('themeToggleBtn');
   const sunIcon = document.getElementById('sunIcon');
   const moonIcon = document.getElementById('moonIcon');
@@ -143,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
     applyTheme(isDark ? 'light' : 'dark');
   }
 
-  if (themeToggleBtn) themeToggleBtn.addEventListener('click', toggleTheme);
+  themeToggleBtn?.addEventListener('click', toggleTheme);
 
   const storedTheme = localStorage.getItem('theme');
   if (storedTheme) {
@@ -152,66 +157,4 @@ document.addEventListener('DOMContentLoaded', () => {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     applyTheme(prefersDark ? 'dark' : 'light');
   }
-
-  // ===== PROFILE FORM =====
-  function loadProfile() {
-    const profile = JSON.parse(localStorage.getItem('profile')) || {
-      username: 'playerone',
-      email: 'playerone@example.com',
-      bio: '',
-      role: 'Pro Gamer',
-    };
-
-    const usernameInput = document.getElementById('username');
-    const emailInput = document.getElementById('email');
-    const bioInput = document.getElementById('bio');
-    const displayName = document.getElementById('displayName');
-    const displayRole = document.getElementById('displayRole');
-
-    if (usernameInput) usernameInput.value = profile.username;
-    if (emailInput) emailInput.value = profile.email;
-    if (bioInput) bioInput.value = profile.bio;
-    if (displayName) displayName.textContent = profile.username;
-    if (displayRole) displayRole.textContent = profile.role;
-  }
-
-  const profileForm = document.getElementById('profileForm');
-  if (profileForm) {
-    profileForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      const username = document.getElementById('username').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const bio = document.getElementById('bio').value.trim();
-
-      if (!username || !email) {
-        alert('Please fill in username and email.');
-        return;
-      }
-
-      const profile = { username, email, bio, role: 'Pro Gamer' };
-      localStorage.setItem('profile', JSON.stringify(profile));
-
-      const displayName = document.getElementById('displayName');
-      const displayRole = document.getElementById('displayRole');
-      if (displayName) displayName.textContent = username;
-      if (displayRole) displayRole.textContent = profile.role;
-
-      alert('Profile saved successfully!');
-    });
-
-    loadProfile();
-  }
-
-  // ===== BUY BUTTON FUNCTIONALITY =====
-  const buyButtons = document.querySelectorAll('.btn-primary');
-  buyButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const game = button.getAttribute('data-game');
-      const price = button.getAttribute('data-price');
-      alert(`You bought "${game}" for $${price}. Thank you!`);
-    });
-  });
-
 });
-        
