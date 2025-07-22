@@ -36,7 +36,7 @@ function loadProfile() {
     username: 'playerone',
     email: 'playerone@example.com',
     bio: '',
-    role: 'Pro Gamer'
+    role: 'Pro Gamer',
   };
 
   const usernameInput = document.getElementById('username');
@@ -57,9 +57,9 @@ if (profileForm) {
   profileForm.addEventListener('submit', function (e) {
     e.preventDefault();
 
-    const username = document.getElementById('username').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const bio = document.getElementById('bio').value.trim();
+    const username = document.getElementById('username')?.value.trim();
+    const email = document.getElementById('email')?.value.trim();
+    const bio = document.getElementById('bio')?.value.trim();
 
     if (!username || !email) {
       alert('Please fill in username and email.');
@@ -70,7 +70,7 @@ if (profileForm) {
       username,
       email,
       bio,
-      role: 'Pro Gamer'
+      role: 'Pro Gamer',
     };
 
     localStorage.setItem('profile', JSON.stringify(profile));
@@ -91,26 +91,9 @@ if (window.location.pathname.includes('logout.html')) {
   }, 1000);
 }
 
-// ===== LOGIN FORM =====
-const loginForm = document.getElementById('loginForm');
-if (loginForm) {
-  loginForm.addEventListener('submit', function (e) {
-    e.preventDefault();
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value.trim();
-
-    if (username === 'player' && password === '1234') {
-      localStorage.setItem('isLoggedIn', 'true');
-      window.location.href = 'dashboard.html';
-    } else {
-      alert('Invalid login!');
-    }
-  });
-}
-
-// ===== INIT ON PAGE LOAD =====
+// ===== MAIN APP LOGIC (LOGIN, REGISTER, THEME, PROFILE) =====
 document.addEventListener('DOMContentLoaded', () => {
-  // Load theme
+  // Load theme from storage or system preference
   const storedTheme = localStorage.getItem('theme');
   if (storedTheme) {
     applyTheme(storedTheme);
@@ -119,8 +102,115 @@ document.addEventListener('DOMContentLoaded', () => {
     applyTheme(prefersDark ? 'dark' : 'light');
   }
 
-  // Load profile if on profile page
+  // Load profile info if on profile page
   if (document.getElementById('profileForm') || document.getElementById('displayName')) {
     loadProfile();
   }
+
+  // Tabs and Forms Elements
+  const loginTab = document.getElementById('loginTab');
+  const registerTab = document.getElementById('registerTab');
+  const loginForm = document.getElementById('loginForm');
+  const registerForm = document.getElementById('registerForm');
+
+  // Functions to toggle forms and tab styles
+  function showLogin() {
+    if (!loginTab || !registerTab || !loginForm || !registerForm) return;
+
+    loginTab.classList.add('bg-yellow-400', 'text-gray-900', 'shadow-lg');
+    loginTab.classList.remove('bg-gray-700', 'hover:bg-gray-600', 'text-white');
+    registerTab.classList.remove('bg-yellow-400', 'text-gray-900', 'shadow-lg');
+    registerTab.classList.add('bg-gray-700', 'hover:bg-gray-600', 'text-white');
+
+    loginForm.classList.remove('hidden');
+    registerForm.classList.add('hidden');
+  }
+
+  function showRegister() {
+    if (!loginTab || !registerTab || !loginForm || !registerForm) return;
+
+    registerTab.classList.add('bg-yellow-400', 'text-gray-900', 'shadow-lg');
+    registerTab.classList.remove('bg-gray-700', 'hover:bg-gray-600', 'text-white');
+    loginTab.classList.remove('bg-yellow-400', 'text-gray-900', 'shadow-lg');
+    loginTab.classList.add('bg-gray-700', 'hover:bg-gray-600', 'text-white');
+
+    registerForm.classList.remove('hidden');
+    loginForm.classList.add('hidden');
+  }
+
+  // Default to show login form
+  showLogin();
+
+  // Add tab event listeners
+  loginTab?.addEventListener('click', showLogin);
+  registerTab?.addEventListener('click', showRegister);
+
+  // Demo user for login
+  const demoUser = { username: 'player', password: '1234' };
+
+  // LOGIN FORM SUBMISSION
+  loginForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const username = loginForm.username?.value.trim();
+    const password = loginForm.password?.value.trim();
+
+    if (!username || !password) {
+      alert('Please enter both username and password.');
+      return;
+    }
+
+    // Get stored users
+    const storedUsers = JSON.parse(localStorage.getItem('users') || '[]');
+
+    // Check if user matches demo or registered users
+    const userFound =
+      (username === demoUser.username && password === demoUser.password) ||
+      storedUsers.some(user => user.username === username && user.password === password);
+
+    if (userFound) {
+      alert(`Welcome back, ${username}!`);
+      loginForm.reset();
+      // Redirect example:
+      // window.location.href = 'dashboard.html';
+    } else {
+      alert('Invalid username or password.');
+    }
+  });
+
+  // REGISTER FORM SUBMISSION
+  registerForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const fullname = registerForm.fullname?.value.trim();
+    const username = registerForm.username?.value.trim();
+    const email = registerForm.email?.value.trim();
+    const password = registerForm.password?.value.trim();
+
+    if (!fullname || !username || !email || !password) {
+      alert('Please fill in all fields.');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert('Please enter a valid email address.');
+      return;
+    }
+
+    let users = JSON.parse(localStorage.getItem('users') || '[]');
+
+    if (users.some(user => user.username === username)) {
+      alert('Username already taken. Please choose another one.');
+      return;
+    }
+
+    users.push({ fullname, username, email, password });
+    localStorage.setItem('users', JSON.stringify(users));
+
+    alert('Account created successfully! You can now log in.');
+
+    registerForm.reset();
+    showLogin();
+  });
 });
