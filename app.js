@@ -1,13 +1,51 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // ===== LOGIN CHECK FOR PROTECTED PAGES =====
-  const protectedPages = ['dashboard.html', 'profile.html'];
   const currentPage = window.location.pathname.split('/').pop();
 
+  // ===== LOGIN CHECK FOR PROTECTED PAGES =====
+  const protectedPages = ['dashboard.html', 'profile.html'];
   if (protectedPages.includes(currentPage)) {
     if (localStorage.getItem('isLoggedIn') !== 'true') {
       window.location.href = 'login.html';
       return;
     }
+  }
+
+  // ===== LOGIN FORM HANDLER (login.html) =====
+  const loginForm = document.getElementById('loginForm');
+  if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const username = loginForm.username.value.trim();
+      const password = loginForm.password.value.trim();
+
+      if (username === 'player' && password === '1234') {
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('profile', JSON.stringify({ username }));
+        window.location.href = 'dashboard.html';
+      } else {
+        alert('Invalid login!');
+      }
+    });
+  }
+
+  // ===== DASHBOARD PROFILE LOADING (dashboard.html) =====
+  if (currentPage === 'dashboard.html') {
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+      const profile = JSON.parse(localStorage.getItem('profile')) || {};
+      const displayName = document.getElementById('displayName');
+      if (displayName && profile.username) {
+        displayName.textContent = profile.username;
+      }
+    }
+  }
+
+  // ===== LOGOUT PAGE HANDLER (logout.html) =====
+  if (currentPage === 'logout.html') {
+    localStorage.clear();
+    setTimeout(() => {
+      window.location.href = 'login.html';
+    }, 1000);
   }
 
   // ===== SIDEBAR TOGGLE (mobile) =====
@@ -119,33 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loadProfile();
   }
 
-  // ===== LOGOUT PAGE HANDLER =====
-  if (window.location.pathname.includes('logout.html')) {
-    localStorage.clear();
-    setTimeout(() => {
-      window.location.href = 'login.html';
-    }, 1000);
-  }
-
-  // ===== LOGIN FORM =====
-  const loginForm = document.getElementById('loginForm');
-  if (loginForm) {
-    loginForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      const username = loginForm.username.value.trim();
-      const password = loginForm.password.value.trim();
-
-      if (username === 'player' && password === '1234') {
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('profile', JSON.stringify({ username }));
-        window.location.href = 'dashboard.html';
-      } else {
-        alert('Invalid login!');
-      }
-    });
-  }
-
   // ===== BUY BUTTON FUNCTIONALITY =====
   const buyButtons = document.querySelectorAll('.btn-primary');
   buyButtons.forEach(button => {
@@ -155,5 +166,5 @@ document.addEventListener('DOMContentLoaded', () => {
       alert(`You bought "${game}" for $${price}. Thank you!`);
     });
   });
+
 });
-      
