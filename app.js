@@ -54,7 +54,7 @@ function loadProfile() {
 
 const profileForm = document.getElementById('profileForm');
 if (profileForm) {
-  profileForm.addEventListener('submit', function (e) {
+  profileForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const username = document.getElementById('username')?.value.trim();
@@ -75,11 +75,12 @@ if (profileForm) {
 
     localStorage.setItem('profile', JSON.stringify(profile));
 
-    // Update display
-    const displayName = document.getElementById('displayName');
-    const displayRole = document.getElementById('displayRole');
-    if (displayName) displayName.textContent = username;
-    if (displayRole) displayRole.textContent = profile.role;
+    if (document.getElementById('displayName')) {
+      document.getElementById('displayName').textContent = username;
+    }
+    if (document.getElementById('displayRole')) {
+      document.getElementById('displayRole').textContent = profile.role;
+    }
 
     alert('Profile saved successfully!');
   });
@@ -93,9 +94,9 @@ if (window.location.pathname.includes('logout.html')) {
   }, 1000);
 }
 
-// ===== MAIN APP LOGIC (LOGIN, REGISTER, THEME, PROFILE) =====
+// ===== LOGIN & REGISTER PAGE LOGIC =====
 document.addEventListener('DOMContentLoaded', () => {
-  // Load theme from storage or system preference
+  // Load saved theme or system preference
   const storedTheme = localStorage.getItem('theme');
   if (storedTheme) {
     applyTheme(storedTheme);
@@ -104,18 +105,17 @@ document.addEventListener('DOMContentLoaded', () => {
     applyTheme(prefersDark ? 'dark' : 'light');
   }
 
-  // Load profile info if on profile page
+  // Load profile if profile page present
   if (document.getElementById('profileForm') || document.getElementById('displayName')) {
     loadProfile();
   }
 
-  // Tabs and Forms Elements
   const loginTab = document.getElementById('loginTab');
   const registerTab = document.getElementById('registerTab');
   const loginForm = document.getElementById('loginForm');
   const registerForm = document.getElementById('registerForm');
 
-  // Functions to toggle forms and tab styles
+  // Show login form by default
   function showLogin() {
     if (!loginTab || !registerTab || !loginForm || !registerForm) return;
 
@@ -140,17 +140,15 @@ document.addEventListener('DOMContentLoaded', () => {
     loginForm.classList.add('hidden');
   }
 
-  // Default to show login form
   showLogin();
 
-  // Add tab event listeners
   loginTab?.addEventListener('click', showLogin);
   registerTab?.addEventListener('click', showRegister);
 
-  // Demo user for login
+  // Demo user credentials
   const demoUser = { username: 'player', password: '1234' };
 
-  // LOGIN FORM SUBMISSION
+  // Handle login submission
   loginForm?.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -162,10 +160,8 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Get stored users
     const storedUsers = JSON.parse(localStorage.getItem('users') || '[]');
 
-    // Check if user matches demo or registered users
     const userFound =
       (username === demoUser.username && password === demoUser.password) ||
       storedUsers.some(user => user.username === username && user.password === password);
@@ -173,14 +169,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userFound) {
       alert(`Welcome back, ${username}!`);
       loginForm.reset();
-      // Uncomment below to redirect after login
+      // Redirect after login, e.g.:
       // window.location.href = 'dashboard.html';
     } else {
       alert('Invalid username or password.');
     }
   });
 
-  // REGISTER FORM SUBMISSION
+  // Handle register submission
   registerForm?.addEventListener('submit', (e) => {
     e.preventDefault();
 
