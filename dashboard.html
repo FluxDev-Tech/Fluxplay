@@ -1,125 +1,187 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>FluxPlay | Dashboard</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet" />
-  <style>
-    body {
-      font-family: 'Orbitron', sans-serif;
-      transition: background-color 0.3s, color 0.3s;
-    }
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-    ::-webkit-scrollbar-thumb {
-      background-color: #fbbf24;
-      border-radius: 4px;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FluxPlay | Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Orbitron', sans-serif;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: #fbbf24;
+      border-radius: 4px;
+    }
+  </style>
 </head>
 <body class="bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900">
 
 <script>
-  const users = JSON.parse(localStorage.getItem('users')) || [];
-  const profile = localStorage.getItem('profile');
-  if (!profile) window.location.href = 'login.html';
+  const users = JSON.parse(localStorage.getItem('users')) || [];
+  const profile = JSON.parse(localStorage.getItem('profile'));
+  if (!profile) window.location.href = 'login.html';
 </script>
 
 <div class="min-h-screen flex flex-col lg:flex-row">
-  <!-- Sidebar -->
-  <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-900 flex flex-col transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out shadow-lg">
-    <div class="flex items-center justify-between px-6 py-5 border-b border-gray-700 dark:border-gray-300">
-      <h2 class="text-3xl font-extrabold text-yellow-400 dark:text-yellow-600 tracking-wide">FluxPlay</h2>
-      <button id="sidebarCloseBtn" class="lg:hidden text-yellow-400 dark:text-yellow-600 text-2xl hover:text-yellow-300 dark:hover:text-yellow-500">✖</button>
-    </div>
-    <!-- Sidebar Navigation -->
-<nav class="flex flex-col mt-8 px-4 space-y-1 flex-1 overflow-y-auto">
-  <a href="dashboard.html" class="flex items-center gap-3 py-3 px-4 rounded-lg bg-yellow-400 text-gray-900 dark:bg-yellow-600 dark:text-gray-100 font-semibold">
-    <span class="text-2xl">🎮</span> Dashboard
-  </a>
-  <a href="profile.html" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-yellow-400 hover:text-gray-900 dark:hover:text-gray-100 font-semibold">
-    <span class="text-2xl">👤</span> Profile
-  </a>
-  <a href="stats.html" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-yellow-400 hover:text-gray-900 dark:hover:text-gray-100 font-semibold">
-    <span class="text-2xl">📊</span> Stats
-  </a>
-  <a href="shop.html" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-yellow-400 hover:text-gray-900 dark:hover:text-gray-100 font-semibold">
-    <span class="text-2xl">🛒</span> Shop
-  </a>
-  <a href="logout.html" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-red-500 hover:text-white font-semibold text-red-400 dark:text-red-600">
-    <span class="text-2xl">🚪</span> Logout
-  </a>
-</nav>
-    <div class="px-6 py-4 border-t border-gray-700 dark:border-gray-300 flex items-center justify-between">
-      <button id="themeToggleBtn" class="flex items-center gap-2 text-yellow-400 dark:text-yellow-600 hover:text-yellow-300 dark:hover:text-yellow-500 font-semibold">
-        <svg id="sunIcon" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364-6.364l-1.414 1.414M7.05 16.95l-1.414 1.414M16.95 16.95l1.414 1.414M7.05 7.05L5.636 5.636M12 7a5 5 0 110 10 5 5 0 010-10z" />
-        </svg>
-        <svg id="moonIcon" class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M17.293 13.293a8 8 0 11-10.586-10.586 7 7 0 0010.586 10.586z" />
-        </svg>
-        <span>Dark Mode</span>
-      </button>
-    </div>
-  </aside>
+  <!-- Sidebar -->
+  <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-900 flex flex-col transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out shadow-lg">
+    <div class="flex items-center justify-between px-6 py-5 border-b border-gray-700 dark:border-gray-300">
+      <h2 class="text-3xl font-extrabold text-yellow-400 dark:text-yellow-600 tracking-wide">FluxPlay</h2>
+      <button id="sidebarCloseBtn" class="lg:hidden text-yellow-400 dark:text-yellow-600 text-2xl hover:text-yellow-300 dark:hover:text-yellow-500">✖</button>
+    </div>
+    <!-- Sidebar Navigation -->
+    <nav class="flex flex-col mt-8 px-4 space-y-1 flex-1 overflow-y-auto">
+      <a href="dashboard.html" class="flex items-center gap-3 py-3 px-4 rounded-lg bg-yellow-400 text-gray-900 dark:bg-yellow-600 dark:text-gray-100 font-semibold">
+        <span class="text-2xl">🎮</span> Dashboard
+      </a>
+      <a href="profile.html" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-yellow-400 hover:text-gray-900 dark:hover:text-gray-100 font-semibold">
+        <span class="text-2xl">👤</span> Profile
+      </a>
+      <a href="stats.html" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-yellow-400 hover:text-gray-900 dark:hover:text-gray-100 font-semibold">
+        <span class="text-2xl">📊</span> Stats
+      </a>
+      <a href="shop.html" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-yellow-400 hover:text-gray-900 dark:hover:text-gray-100 font-semibold">
+        <span class="text-2xl">🛒</span> Shop
+      </a>
+      <a href="logout.html" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-red-500 hover:text-white font-semibold text-red-400 dark:text-red-600">
+        <span class="text-2xl">🚪</span> Logout
+      </a>
+    </nav>
+    <div class="px-6 py-4 border-t border-gray-700 dark:border-gray-300 flex items-center justify-between">
+      <button id="themeToggleBtn" class="flex items-center gap-2 text-yellow-400 dark:text-yellow-600 hover:text-yellow-300 dark:hover:text-yellow-500 font-semibold">
+        <svg id="sunIcon" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364-6.364l-1.414 1.414M7.05 16.95l-1.414 1.414M16.95 16.95l1.414 1.414M7.05 7.05L5.636 5.636M12 7a5 5 0 110 10 5 5 0 010-10z" />
+        </svg>
+        <svg id="moonIcon" class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M17.293 13.293a8 8 0 11-10.586-10.586 7 7 0 0010.586 10.586z" />
+        </svg>
+        <span>Dark Mode</span>
+      </button>
+    </div>
+  </aside>
 
-  <!-- Main Content -->
-  <main class="flex-1 ml-0 lg:ml-64 p-8 pt-24 lg:pt-8 overflow-y-auto transition-colors duration-300">
-    <header class="fixed top-0 left-0 right-0 bg-gray-900 dark:bg-gray-100 border-b border-gray-700 dark:border-gray-300 p-4 flex items-center justify-between lg:hidden z-40">
-      <button id="sidebarToggleBtn" class="text-yellow-400 dark:text-yellow-600 text-3xl">☰</button>
-      <h1 class="text-xl font-bold">FluxPlay</h1>
-      <div></div>
-    </header>
+  <!-- Main Content -->
+  <main class="flex-1 ml-0 lg:ml-64 p-8 pt-24 lg:pt-8 overflow-y-auto transition-colors duration-300">
+    <header class="fixed top-0 left-0 right-0 bg-gray-900 dark:bg-gray-100 border-b border-gray-700 dark:border-gray-300 p-4 flex items-center justify-between lg:hidden z-40">
+      <button id="sidebarToggleBtn" class="text-yellow-400 dark:text-yellow-600 text-3xl">☰</button>
+      <h1 class="text-xl font-bold">FluxPlay</h1>
+      <div></div>
+    </header>
 
-    <!-- Dashboard Content -->
-    <section class="flex justify-between items-center mb-8">
-      <h1 class="text-4xl font-extrabold tracking-wide">Dashboard</h1>
-      <div class="flex items-center gap-4">
-        <span id="displayName" class="text-sm text-gray-400 dark:text-gray-600">fluxdev</span>
-        <img src="assets/img/avatar.png" alt="Avatar" class="w-12 h-12 rounded-full border-2 border-yellow-400 dark:border-yellow-600" />
-      </div>
-    </section>
+    <!-- Dashboard Content -->
+    <section class="flex justify-between items-center mb-8">
+      <h1 class="text-4xl font-extrabold tracking-wide">Dashboard</h1>
+      <div class="flex items-center gap-4">
+        <span id="displayName" class="text-sm text-gray-400 dark:text-gray-600"></span>
+        <img src="assets/img/avatar.png" alt="Avatar" class="w-12 h-12 rounded-full border-2 border-yellow-400 dark:border-yellow-600" />
+      </div>
+    </section>
 
-    <section class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
-      <div class="bg-gradient-to-br from-purple-600 to-indigo-800 dark:from-purple-400 dark:to-indigo-600 p-6 rounded-xl shadow-lg">
-        <h3 class="text-xl font-bold mb-2">Games Played</h3>
-        <p class="text-4xl font-extrabold">128</p>
-      </div>
-      <div class="bg-gradient-to-br from-pink-600 to-red-700 dark:from-pink-400 dark:to-red-600 p-6 rounded-xl shadow-lg">
-        <h3 class="text-xl font-bold mb-2">Trophies</h3>
-        <p class="text-4xl font-extrabold">32</p>
-      </div>
-      <div class="bg-gradient-to-br from-yellow-500 to-orange-600 dark:from-yellow-300 dark:to-orange-400 p-6 rounded-xl shadow-lg">
-        <h3 class="text-xl font-bold mb-2">Online Hours</h3>
-        <p class="text-4xl font-extrabold">712h</p>
-      </div>
-    </section>
+    <section class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
+      <div class="bg-gradient-to-br from-purple-600 to-indigo-800 dark:from-purple-400 dark:to-indigo-600 p-6 rounded-xl shadow-lg">
+        <h3 class="text-xl font-bold mb-2">Games Played</h3>
+        <p class="text-4xl font-extrabold">128</p>
+      </div>
+      <div class="bg-gradient-to-br from-pink-600 to-red-700 dark:from-pink-400 dark:to-red-600 p-6 rounded-xl shadow-lg">
+        <h3 class="text-xl font-bold mb-2">Trophies</h3>
+        <p class="text-4xl font-extrabold">32</p>
+      </div>
+      <div class="bg-gradient-to-br from-yellow-500 to-orange-600 dark:from-yellow-300 dark:to-orange-400 p-6 rounded-xl shadow-lg">
+        <h3 class="text-xl font-bold mb-2">Online Hours</h3>
+        <p class="text-4xl font-extrabold">712h</p>
+      </div>
+    </section>
 
-    <section>
-      <h2 class="text-3xl font-extrabold mb-6">Your Games</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        <article class="bg-gray-800 dark:bg-gray-200 rounded-xl p-4 hover:scale-105 transition transform cursor-pointer shadow-md">
-          <img src="assets/img/game1.jpg" alt="Cyber Arena" class="rounded-lg mb-4" />
-          <h3 class="text-lg font-semibold dark:text-gray-900">Cyber Arena</h3>
-          <p class="text-gray-400 dark:text-gray-600">Sci-fi PvP shooter</p>
-        </article>
-        <article class="bg-gray-800 dark:bg-gray-200 rounded-xl p-4 hover:scale-105 transition transform cursor-pointer shadow-md">
-          <img src="assets/img/game2.jpg" alt="Dragon Valley" class="rounded-lg mb-4" />
-          <h3 class="text-lg font-semibold dark:text-gray-900">Dragon Valley</h3>
-          <p class="text-gray-400 dark:text-gray-600">Fantasy MMORPG</p>
-        </article>
-        <article class="bg-gray-800 dark:bg-gray-200 rounded-xl p-4 hover:scale-105 transition transform cursor-pointer shadow-md">
-          <img src="assets/img/game3.jpg" alt="Mecha Storm" class="rounded-lg mb-4" />
-          <h3 class="text-lg font-semibold dark:text-gray-900">Mecha Storm</h3>
-          <p class="text-gray-400 dark:text-gray-600">Multiplayer Mech Battles</p>
-        </article>
-      </div>
-    </section>
-  </main>
+    <section>
+      <h2 class="text-3xl font-extrabold mb-6">Your Games</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <article class="bg-gray-800 dark:bg-gray-200 rounded-xl p-4 hover:scale-105 transition transform cursor-pointer shadow-md">
+          <img src="assets/img/game1.jpg" alt="Cyber Arena" class="rounded-lg mb-4" />
+          <h3 class="text-lg font-semibold dark:text-gray-900">Cyber Arena</h3>
+          <p class="text-gray-400 dark:text-gray-600">Sci-fi PvP shooter</p>
+        </article>
+        <article class="bg-gray-800 dark:bg-gray-200 rounded-xl p-4 hover:scale-105 transition transform cursor-pointer shadow-md">
+          <img src="assets/img/game2.jpg" alt="Dragon Valley" class="rounded-lg mb-4" />
+          <h3 class="text-lg font-semibold dark:text-gray-900">Dragon Valley</h3>
+          <p class="text-gray-400 dark:text-gray-600">Fantasy MMORPG</p>
+        </article>
+        <article class="bg-gray-800 dark:bg-gray-200 rounded-xl p-4 hover:scale-105 transition transform cursor-pointer shadow-md">
+          <img src="assets/img/game3.jpg" alt="Mecha Storm" class="rounded-lg mb-4" />
+          <h3 class="text-lg font-semibold dark:text-gray-900">Mecha Storm</h3>
+          <p class="text-gray-400 dark:text-gray-600">Multiplayer Mech Battles</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- New: Login Frequency -->
+    <section class="mt-12">
+      <h2 class="text-3xl font-extrabold mb-6">Login Frequency</h2>
+      <div id="loginFrequencyContainer" class="space-y-2 p-4 bg-gray-800 dark:bg-gray-200 rounded-lg shadow-inner max-h-64 overflow-auto text-yellow-400"></div>
+    </section>
+
+    <!-- New: Purchase History -->
+    <section class="mt-12">
+      <h2 class="text-3xl font-extrabold mb-6">Purchase History</h2>
+      <div id="purchaseListContainer" class="space-y-2 p-4 bg-gray-800 dark:bg-gray-200 rounded-lg shadow-inner max-h-64 overflow-auto text-yellow-400"></div>
+    </section>
+  </main>
 </div>
+
+<script>
+  const profileData = JSON.parse(localStorage.getItem('profile'));
+  const username = profileData?.username || 'Unknown User';
+
+  // Show logged in user name
+  document.getElementById('displayName').textContent = username;
+
+  // Display login frequency data
+  function displayLoginFrequency() {
+    const loginCounts = JSON.parse(localStorage.getItem('loginCounts')) || {};
+    const container = document.getElementById('loginFrequencyContainer');
+    container.innerHTML = '';
+
+    // Sort users by login count desc
+    const sortedUsers = Object.entries(loginCounts).sort((a, b) => b[1] - a[1]);
+
+    sortedUsers.forEach(([user, count]) => {
+      const p = document.createElement('p');
+      p.textContent = `${user}: ${count} logins`;
+      container.appendChild(p);
+    });
+
+    if (sortedUsers.length === 0) {
+      container.textContent = 'No login data available.';
+    }
+  }
+
+  // Display purchase history data
+  function displayPurchases() {
+    const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
+    const container = document.getElementById('purchaseListContainer');
+    container.innerHTML = '';
+
+    if (purchases.length === 0) {
+      container.textContent = 'No purchases yet.';
+      return;
+    }
+
+    purchases.forEach(({ username, gameTitle, date }) => {
+      const p = document.createElement('p');
+      p.textContent = `${username} bought "${gameTitle}" on ${new Date(date).toLocaleString()}`;
+      container.appendChild(p);
+    });
+  }
+
+  // Initialize display
+  displayLoginFrequency();
+  displayPurchases();
+</script>
 <script src="assets/js/app.js" defer></script>
 </body>
 </html>
