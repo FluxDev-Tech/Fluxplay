@@ -10,6 +10,50 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // ===== REGISTER FORM HANDLER (register.html) =====
+  const registerForm = document.getElementById('registerForm');
+  if (registerForm) {
+    registerForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const username = registerForm.username.value.trim();
+      const email = registerForm.email.value.trim();
+      const password = registerForm.password.value.trim();
+      const confirmPassword = registerForm.confirmPassword.value.trim();
+
+      if (!username || !email || !password || !confirmPassword) {
+        alert('Please fill in all fields.');
+        return;
+      }
+      if (password !== confirmPassword) {
+        alert('Passwords do not match!');
+        return;
+      }
+
+      // Get existing users from localStorage or empty array
+      const users = JSON.parse(localStorage.getItem('users')) || [];
+
+      // Check if username or email already exists
+      const usernameExists = users.some(u => u.username === username);
+      const emailExists = users.some(u => u.email === email);
+      if (usernameExists) {
+        alert('Username already taken.');
+        return;
+      }
+      if (emailExists) {
+        alert('Email already registered.');
+        return;
+      }
+
+      // Add new user
+      users.push({ username, email, password });
+      localStorage.setItem('users', JSON.stringify(users));
+
+      alert('Registration successful! Please login.');
+      window.location.href = 'login.html';
+    });
+  }
+
   // ===== LOGIN FORM HANDLER (login.html) =====
   const loginForm = document.getElementById('loginForm');
   if (loginForm) {
@@ -19,12 +63,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const username = loginForm.username.value.trim();
       const password = loginForm.password.value.trim();
 
-      if (username === 'player' && password === '1234') {
+      // Get users from localStorage
+      const users = JSON.parse(localStorage.getItem('users')) || [];
+
+      // Find user with matching username and password
+      const user = users.find(u => u.username === username && u.password === password);
+
+      if (user) {
         localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('profile', JSON.stringify({ username }));
+        localStorage.setItem('profile', JSON.stringify({ username: user.username, email: user.email }));
         window.location.href = 'dashboard.html';
       } else {
-        alert('Invalid login!');
+        alert('Invalid username or password');
       }
     });
   }
@@ -168,3 +218,4 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 });
+      
