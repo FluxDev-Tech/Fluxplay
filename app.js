@@ -1,21 +1,34 @@
-// app.js
 document.addEventListener('DOMContentLoaded', () => {
-  // --- Elements ---
-  const loginTab = document.getElementById('loginTab');
-  const registerTab = document.getElementById('registerTab');
-  const loginForm = document.getElementById('loginForm');
-  const registerForm = document.getElementById('registerForm');
+  // ===== SIDEBAR TOGGLE (mobile) =====
+  const sidebar = document.getElementById('sidebar');
+  const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+  const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+
+  function toggleSidebar() {
+    sidebar?.classList.toggle('open');
+  }
+
+  sidebarToggleBtn?.addEventListener('click', toggleSidebar);
+  sidebarCloseBtn?.addEventListener('click', () => {
+    sidebar?.classList.remove('open');
+  });
+
+  // Close sidebar if clicked outside on mobile
+  document.addEventListener('click', (e) => {
+    if (
+      sidebar &&
+      sidebar.classList.contains('open') &&
+      !sidebar.contains(e.target) &&
+      !sidebarToggleBtn.contains(e.target)
+    ) {
+      sidebar.classList.remove('open');
+    }
+  });
+
+  // ===== THEME TOGGLE =====
   const themeToggleBtn = document.getElementById('themeToggleBtn');
   const sunIcon = document.getElementById('sunIcon');
   const moonIcon = document.getElementById('moonIcon');
-  const profileForm = document.getElementById('profileForm');
-
-  // --- UTILS ---
-  function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    sidebar?.classList.toggle('-translate-x-full');
-  }
-  window.toggleSidebar = toggleSidebar; // Make global for inline onclicks
 
   function applyTheme(theme) {
     if (theme === 'dark') {
@@ -36,7 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
     applyTheme(isDark ? 'light' : 'dark');
   }
 
-  // --- THEME INIT ---
+  themeToggleBtn?.addEventListener('click', toggleTheme);
+
+  // Initialize theme on page load
   const storedTheme = localStorage.getItem('theme');
   if (storedTheme) {
     applyTheme(storedTheme);
@@ -44,127 +59,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     applyTheme(prefersDark ? 'dark' : 'light');
   }
-  themeToggleBtn?.addEventListener('click', toggleTheme);
 
-  // --- LOGIN & REGISTER TABS ---
-  function showLogin() {
-    if (!loginTab || !registerTab || !loginForm || !registerForm) return;
-    loginTab.classList.add('bg-yellow-400', 'text-gray-900');
-    loginTab.classList.remove('bg-gray-700', 'text-white');
-    registerTab.classList.remove('bg-yellow-400', 'text-gray-900');
-    registerTab.classList.add('bg-gray-700', 'text-white');
-    loginForm.classList.remove('hidden');
-    registerForm.classList.add('hidden');
-  }
-  function showRegister() {
-    if (!loginTab || !registerTab || !loginForm || !registerForm) return;
-    registerTab.classList.add('bg-yellow-400', 'text-gray-900');
-    registerTab.classList.remove('bg-gray-700', 'text-white');
-    loginTab.classList.remove('bg-yellow-400', 'text-gray-900');
-    loginTab.classList.add('bg-gray-700', 'text-white');
-    registerForm.classList.remove('hidden');
-    loginForm.classList.add('hidden');
-  }
-  if (loginTab && registerTab) {
-    loginTab.addEventListener('click', showLogin);
-    registerTab.addEventListener('click', showRegister);
+  // ===== PROFILE FORM =====
+  function loadProfile() {
+    const profile = JSON.parse(localStorage.getItem('profile')) || {
+      username: 'playerone',
+      email: 'playerone@example.com',
+      bio: '',
+      role: 'Pro Gamer',
+    };
+
+    const usernameInput = document.getElementById('username');
+    const emailInput = document.getElementById('email');
+    const bioInput = document.getElementById('bio');
+    const displayName = document.getElementById('displayName');
+    const displayRole = document.getElementById('displayRole');
+
+    if (usernameInput) usernameInput.value = profile.username;
+    if (emailInput) emailInput.value = profile.email;
+    if (bioInput) bioInput.value = profile.bio;
+    if (displayName) displayName.textContent = profile.username;
+    if (displayRole) displayRole.textContent = profile.role;
   }
 
-  // --- USER SESSION MANAGEMENT ---
-  function isLoggedIn() {
-    return localStorage.getItem('isLoggedIn') === 'true';
-  }
-
-  // --- PAGE PROTECTION ---
-  const protectedPages = ['dashboard.html', 'profile.html', 'stats.html'];
-  const currentPage = window.location.pathname.split('/').pop();
-
-  if (protectedPages.includes(currentPage) && !isLoggedIn()) {
-    window.location.href = 'login.html';
-  }
-
-  // --- LOGIN FORM HANDLER ---
-  if (loginForm) {
-    loginForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const username = loginForm.username.value.trim();
-      const password = loginForm.password.value.trim();
-
-      // Fetch registered users from localStorage
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-
-      // Allow demo user login
-      const demoUser = { username: 'player', password: '1234' };
-
-      const validUser =
-        (username === demoUser.username && password === demoUser.password) ||
-        users.some(user => user.username === username && user.password === password);
-
-      if (validUser) {
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('profile', JSON.stringify({ username, role: 'Pro Gamer' }));
-        window.location.href = 'dashboard.html';
-      } else {
-        alert('Invalid username or password.');
-      }
-    });
-  }
-
-  // --- REGISTER FORM HANDLER ---
-  if (registerForm) {
-    registerForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const fullname = registerForm.fullname.value.trim();
-      const username = registerForm.username.value.trim();
-      const email = registerForm.email.value.trim();
-      const password = registerForm.password.value.trim();
-
-      if (!fullname || !username || !email || !password) {
-        alert('Please fill in all fields.');
-        return;
-      }
-
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        alert('Invalid email format.');
-        return;
-      }
-
-      let users = JSON.parse(localStorage.getItem('users') || '[]');
-      if (users.some(user => user.username === username)) {
-        alert('Username already exists.');
-        return;
-      }
-
-      users.push({ fullname, username, email, password });
-      localStorage.setItem('users', JSON.stringify(users));
-      alert('Account created successfully!');
-      registerForm.reset();
-      showLogin();
-    });
-  }
-
-  // --- PROFILE PAGE LOGIC ---
+  const profileForm = document.getElementById('profileForm');
   if (profileForm) {
-    function loadProfile() {
-      const profile = JSON.parse(localStorage.getItem('profile')) || {
-        username: '',
-        email: '',
-        bio: '',
-        role: 'Pro Gamer',
-      };
-      profileForm.username.value = profile.username || '';
-      profileForm.email.value = profile.email || '';
-      profileForm.bio.value = profile.bio || '';
-      document.getElementById('displayName')?.textContent = profile.username || '';
-      document.getElementById('displayRole')?.textContent = profile.role || '';
-    }
-
     profileForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const username = profileForm.username.value.trim();
-      const email = profileForm.email.value.trim();
-      const bio = profileForm.bio.value.trim();
+
+      const username = document.getElementById('username').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const bio = document.getElementById('bio').value.trim();
 
       if (!username || !email) {
         alert('Please fill in username and email.');
@@ -173,94 +98,115 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const profile = { username, email, bio, role: 'Pro Gamer' };
       localStorage.setItem('profile', JSON.stringify(profile));
-      document.getElementById('displayName')?.textContent = username;
-      document.getElementById('displayRole')?.textContent = profile.role;
+
+      const displayName = document.getElementById('displayName');
+      const displayRole = document.getElementById('displayRole');
+      if (displayName) displayName.textContent = username;
+      if (displayRole) displayRole.textContent = profile.role;
+
       alert('Profile saved successfully!');
     });
+  }
 
+  // Load profile on page load if profile form or display elements exist
+  if (document.getElementById('profileForm') || document.getElementById('displayName')) {
     loadProfile();
   }
 
-  // --- LOGOUT HANDLER ---
-  if (currentPage === 'logout.html') {
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('profile');
+  // ===== LOGOUT PAGE HANDLER =====
+  if (window.location.pathname.includes('logout.html')) {
+    localStorage.clear();
     setTimeout(() => {
       window.location.href = 'login.html';
     }, 1000);
   }
 
-  // --- STATS PAGE CHARTS ---
-  if (currentPage === 'stats.html') {
-    // Chart.js must be loaded in the HTML page
-    const ctx1 = document.getElementById('gamesPlayedChart')?.getContext('2d');
-    if (ctx1) {
-      new Chart(ctx1, {
-        type: 'line',
-        data: {
-          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-          datasets: [{
-            label: 'Games Played',
-            data: [12, 19, 8, 24, 32, 28, 40],
-            fill: true,
-            borderColor: '#7c3aed',
-            backgroundColor: 'rgba(124, 58, 237, 0.3)',
-            tension: 0.3,
-            pointBackgroundColor: '#7c3aed'
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: { beginAtZero: true }
-          },
-          plugins: {
-            legend: { labels: { color: document.body.classList.contains('dark') ? 'white' : 'black' } }
-          }
-        }
-      });
-    }
+  // ===== LOGIN FORM =====
+  const loginForm = document.getElementById('loginForm');
+  if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
 
-    const ctx2 = document.getElementById('trophiesChart')?.getContext('2d');
-    if (ctx2) {
-      new Chart(ctx2, {
-        type: 'bar',
-        data: {
-          labels: ['Cyber Arena', 'Dragon Valley', 'Mecha Storm'],
-          datasets: [{
-            label: 'Trophies',
-            data: [15, 10, 7],
-            backgroundColor: ['#db2777', '#f97316', '#facc15']
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: { beginAtZero: true }
-          },
-          plugins: { legend: { display: false } }
-        }
-      });
-    }
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
 
-    const ctx3 = document.getElementById('onlineHoursChart')?.getContext('2d');
-    if (ctx3) {
-      new Chart(ctx3, {
-        type: 'doughnut',
-        data: {
-          labels: ['Cyber Arena', 'Dragon Valley', 'Mecha Storm'],
-          datasets: [{
-            label: 'Online Hours',
-            data: [250, 300, 162],
-            backgroundColor: ['#eab308', '#f97316', '#7c3aed']
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: { legend: { position: 'right' } }
-        }
-      });
-    }
+      if (username === 'player' && password === '1234') {
+        localStorage.setItem('isLoggedIn', 'true');
+        window.location.href = 'dashboard.html';
+      } else {
+        alert('Invalid login!');
+      }
+    });
   }
+
+  // ===== LOGIN / REGISTER TAB SWITCH & FORM SUBMIT =====
+  const loginTab = document.getElementById('loginTab');
+  const registerTab = document.getElementById('registerTab');
+  const registerForm = document.getElementById('registerForm');
+
+  if (loginTab && registerTab && loginForm && registerForm) {
+    function showLogin() {
+      loginForm.classList.remove('hidden');
+      registerForm.classList.add('hidden');
+      loginTab.classList.add('bg-yellow-400', 'text-gray-900');
+      loginTab.classList.remove('bg-gray-700', 'text-white');
+      registerTab.classList.remove('bg-yellow-400', 'text-gray-900');
+      registerTab.classList.add('bg-gray-700', 'text-white');
+    }
+
+    function showRegister() {
+      loginForm.classList.add('hidden');
+      registerForm.classList.remove('hidden');
+      registerTab.classList.add('bg-yellow-400', 'text-gray-900');
+      registerTab.classList.remove('bg-gray-700', 'text-white');
+      loginTab.classList.remove('bg-yellow-400', 'text-gray-900');
+      loginTab.classList.add('bg-gray-700', 'text-white');
+    }
+
+    loginTab.addEventListener('click', showLogin);
+    registerTab.addEventListener('click', showRegister);
+
+    showLogin();
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const username = loginForm.username.value.trim();
+      const password = loginForm.password.value.trim();
+
+      if (username === 'player' && password === '1234') {
+        alert('Login successful!');
+        localStorage.setItem('isLoggedIn', 'true');
+        window.location.href = 'dashboard.html';
+      } else {
+        alert('Invalid login credentials.');
+      }
+    });
+
+    registerForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const fullname = registerForm.fullname.value.trim();
+      const username = registerForm.username.value.trim();
+      const email = registerForm.email.value.trim();
+      const password = registerForm.password.value.trim();
+
+      if (fullname && username && email && password) {
+        alert(`Account created for ${fullname}! You can now login.`);
+        registerForm.reset();
+        showLogin();
+      } else {
+        alert('Please fill in all fields.');
+      }
+    });
+  }
+
+  // ===== BUY BUTTON FUNCTIONALITY =====
+  const buyButtons = document.querySelectorAll('.btn-primary');
+  buyButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const game = button.getAttribute('data-game');
+      const price = button.getAttribute('data-price');
+      alert(`You bought "${game}" for $${price}. Thank you!`);
+      // Extend here for real cart or payment integration
+    });
+  });
 });
-            
