@@ -1,10 +1,10 @@
-// ===== SIDEBAR TOGGLE (Mobile) =====
+// ==================== SIDEBAR TOGGLE (Mobile) ====================
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
   sidebar?.classList.toggle('-translate-x-full');
 }
 
-// ===== THEME TOGGLE =====
+// ==================== THEME TOGGLE ====================
 const themeToggleBtn = document.getElementById('themeToggleBtn');
 const sunIcon = document.getElementById('sunIcon');
 const moonIcon = document.getElementById('moonIcon');
@@ -30,7 +30,7 @@ function toggleTheme() {
 
 themeToggleBtn?.addEventListener('click', toggleTheme);
 
-// ===== PROFILE FORM LOADING/SAVING =====
+// ==================== PROFILE PAGE ====================
 function loadProfile() {
   const profile = JSON.parse(localStorage.getItem('profile')) || {
     username: 'playerone',
@@ -50,7 +50,6 @@ const profileForm = document.getElementById('profileForm');
 if (profileForm) {
   profileForm.addEventListener('submit', (e) => {
     e.preventDefault();
-
     const username = document.getElementById('username')?.value.trim();
     const email = document.getElementById('email')?.value.trim();
     const bio = document.getElementById('bio')?.value.trim();
@@ -62,17 +61,15 @@ if (profileForm) {
 
     const profile = { username, email, bio, role: 'Pro Gamer' };
     localStorage.setItem('profile', JSON.stringify(profile));
-
     document.getElementById('displayName')?.textContent = username;
     document.getElementById('displayRole')?.textContent = profile.role;
-
     alert('Profile saved successfully!');
   });
 
   loadProfile();
 }
 
-// ===== LOGOUT PAGE HANDLER =====
+// ==================== LOGOUT HANDLER ====================
 if (window.location.pathname.includes('logout.html')) {
   localStorage.removeItem('isLoggedIn');
   localStorage.removeItem('profile');
@@ -81,9 +78,9 @@ if (window.location.pathname.includes('logout.html')) {
   }, 1000);
 }
 
-// ===== LOGIN/REGISTER PAGE LOGIC =====
+// ==================== MAIN LOGIC ====================
 document.addEventListener('DOMContentLoaded', () => {
-  // Apply theme
+  // Apply Theme
   const storedTheme = localStorage.getItem('theme');
   if (storedTheme) {
     applyTheme(storedTheme);
@@ -92,61 +89,63 @@ document.addEventListener('DOMContentLoaded', () => {
     applyTheme(prefersDark ? 'dark' : 'light');
   }
 
-  // Protect dashboard and profile
+  // Page Protection
   const protectedPages = ['dashboard.html', 'profile.html', 'stats.html'];
-  const path = window.location.pathname.split('/').pop();
-  if (protectedPages.includes(path) && localStorage.getItem('isLoggedIn') !== 'true') {
+  const currentPage = window.location.pathname.split('/').pop();
+  if (protectedPages.includes(currentPage) && localStorage.getItem('isLoggedIn') !== 'true') {
     window.location.href = 'login.html';
   }
 
+  // Tabs
   const loginTab = document.getElementById('loginTab');
   const registerTab = document.getElementById('registerTab');
   const loginForm = document.getElementById('loginForm');
   const registerForm = document.getElementById('registerForm');
 
+  // Tab Toggle Functions
   function showLogin() {
-    loginTab?.classList.add('bg-yellow-400', 'text-gray-900', 'shadow-lg');
-    loginTab?.classList.remove('bg-gray-700', 'hover:bg-gray-600', 'text-white');
-    registerTab?.classList.remove('bg-yellow-400', 'text-gray-900', 'shadow-lg');
-    registerTab?.classList.add('bg-gray-700', 'hover:bg-gray-600', 'text-white');
+    if (!loginTab || !registerTab || !loginForm || !registerForm) return;
 
-    loginForm?.classList.remove('hidden');
-    registerForm?.classList.add('hidden');
+    loginTab.classList.add('bg-yellow-400', 'text-gray-900');
+    loginTab.classList.remove('bg-gray-700', 'text-white');
+    registerTab.classList.remove('bg-yellow-400', 'text-gray-900');
+    registerTab.classList.add('bg-gray-700', 'text-white');
+    loginForm.classList.remove('hidden');
+    registerForm.classList.add('hidden');
   }
 
   function showRegister() {
-    registerTab?.classList.add('bg-yellow-400', 'text-gray-900', 'shadow-lg');
-    registerTab?.classList.remove('bg-gray-700', 'hover:bg-gray-600', 'text-white');
-    loginTab?.classList.remove('bg-yellow-400', 'text-gray-900', 'shadow-lg');
-    loginTab?.classList.add('bg-gray-700', 'hover:bg-gray-600', 'text-white');
+    if (!loginTab || !registerTab || !loginForm || !registerForm) return;
 
-    registerForm?.classList.remove('hidden');
-    loginForm?.classList.add('hidden');
+    registerTab.classList.add('bg-yellow-400', 'text-gray-900');
+    registerTab.classList.remove('bg-gray-700', 'text-white');
+    loginTab.classList.remove('bg-yellow-400', 'text-gray-900');
+    loginTab.classList.add('bg-gray-700', 'text-white');
+    registerForm.classList.remove('hidden');
+    loginForm.classList.add('hidden');
   }
 
+  // Show login tab by default
   showLogin();
   loginTab?.addEventListener('click', showLogin);
   registerTab?.addEventListener('click', showRegister);
 
-  // Handle login
+  // Dummy user (can be removed later)
   const demoUser = { username: 'player', password: '1234' };
+
+  // ===== LOGIN FORM HANDLER =====
   loginForm?.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const username = loginForm.username?.value.trim();
     const password = loginForm.password?.value.trim();
-
-    if (!username || !password) {
-      alert('Please enter both username and password.');
-      return;
-    }
-
     const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const validLogin =
-      (username === demoUser.username && password === demoUser.password) ||
-      users.some(u => u.username === username && u.password === password);
 
-    if (validLogin) {
+    const isValid =
+      (username === demoUser.username && password === demoUser.password) ||
+      users.some(user => user.username === username && user.password === password);
+
+    if (isValid) {
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('profile', JSON.stringify({ username, role: 'Pro Gamer' }));
       window.location.href = 'dashboard.html';
@@ -155,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Handle register
+  // ===== REGISTER FORM HANDLER =====
   registerForm?.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -176,14 +175,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const users = JSON.parse(localStorage.getItem('users') || '[]');
-    if (users.some(u => u.username === username)) {
-      alert('Username already taken.');
+    if (users.some(user => user.username === username)) {
+      alert('Username already exists.');
       return;
     }
 
     users.push({ fullname, username, email, password });
     localStorage.setItem('users', JSON.stringify(users));
-    alert('Account created successfully. You can now log in.');
+    alert('Account created successfully!');
     registerForm.reset();
     showLogin();
   });
