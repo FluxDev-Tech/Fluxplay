@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.removeItem('bio');
 
     setTimeout(() => {
-      window.location.replace('login.html');
+      window.location.href = 'login.html';
     }, 1500); // Delay to show logout message
 
     return;
