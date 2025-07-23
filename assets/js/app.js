@@ -114,15 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ===== SHOW PROFILE USERNAME (profile.html) =====
-  if (['dashboard.html', 'profile.html', 'stats.html'].includes(page)) {
-    const profile = JSON.parse(localStorage.getItem('profile'));
-    const displayName = document.getElementById('displayName');
-    if (displayName && profile?.username) {
-      displayName.textContent = profile.username;
-    }
-  }
-
   // ===== LOGOUT BUTTON =====
   const logoutBtn = document.getElementById('logoutBtn');
   if (logoutBtn) {
