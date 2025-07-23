@@ -13,17 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ===== LOGOUT PAGE HANDLER =====
   if (page === 'logout.html') {
-    // Clear login/session data on logout page
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('profile');
-    // Add any other keys you want to clear here
-
-    // Redirect to login page after 2 seconds
-    setTimeout(() => {
-      window.location.href = 'login.html';
-    }, 2000);
-
-    // Stop further script execution here (optional)
+    setTimeout(() => window.location.href = 'login.html', 2000);
     return;
   }
 
@@ -59,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ===== REGISTER FUNCTION =====
   if (registerForm) {
-    registerForm.addEventListener('submit', (e) => {
+    registerForm.addEventListener('submit', e => {
       e.preventDefault();
 
       const username = document.getElementById('regUsername').value.trim();
@@ -95,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ===== LOGIN FUNCTION =====
   if (loginForm) {
-    loginForm.addEventListener('submit', (e) => {
+    loginForm.addEventListener('submit', e => {
       e.preventDefault();
 
       const username = document.getElementById('username').value.trim();
@@ -115,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ===== SHOW PROFILE USERNAME =====
+  // ===== SHOW PROFILE USERNAME (profile.html) =====
   if (['dashboard.html', 'profile.html', 'stats.html'].includes(page)) {
     const profile = JSON.parse(localStorage.getItem('profile'));
     const displayName = document.getElementById('displayName');
@@ -128,7 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const logoutBtn = document.getElementById('logoutBtn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
-      // Clear all session data on logout click
       localStorage.clear();
       window.location.href = 'login.html';
     });
@@ -152,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
   sidebarToggleBtn?.addEventListener('click', openSidebar);
   sidebarCloseBtn?.addEventListener('click', closeSidebar);
 
-  document.addEventListener('click', (e) => {
+  document.addEventListener('click', e => {
     if (
       sidebar?.classList.contains('translate-x-0') &&
       !sidebar.contains(e.target) &&
@@ -242,4 +233,4 @@ document.addEventListener('DOMContentLoaded', () => {
   confirmBtn?.addEventListener('click', window.confirmPurchase);
   cancelBtn?.addEventListener('click', window.closeModal);
 });
-      
+    
