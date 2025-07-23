@@ -21,11 +21,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ===== LOGOUT HANDLER =====
   if (page === 'logout.html') {
+    const logoutMessage = document.querySelector('p');
+    if (logoutMessage) logoutMessage.textContent = 'Logging you out...';
+
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('profile');
     localStorage.removeItem('avatar');
     localStorage.removeItem('bio');
-    window.location.replace('login.html');
+
+    setTimeout(() => {
+      window.location.replace('login.html');
+    }, 1500); // Delay to show logout message
+
     return;
   }
 
@@ -290,4 +297,4 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(imageInput);
   }
 });
-                          
+      
