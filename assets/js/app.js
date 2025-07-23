@@ -1,7 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
   const page = window.location.pathname.split('/').pop();
 
-  // ===== PROTECTED PAGES CHECK =====
+  // ===== DEFAULT ACCOUNT SETUP =====
+  if (!localStorage.getItem('users')) {
+    const defaultUsers = [
+      { fullname: 'Admin User', username: 'admin', email: 'admin@fluxplay.com', password: 'player1' }
+    ];
+    localStorage.setItem('users', JSON.stringify(defaultUsers));
+  }
+
+  // ===== AUTH GUARD =====
   const protectedPages = ['dashboard.html', 'profile.html', 'stats.html'];
   if (protectedPages.includes(page)) {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
@@ -11,23 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ===== LOGOUT PAGE HANDLER =====
+  // ===== LOGOUT HANDLER =====
   if (page === 'logout.html') {
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('profile');
-    window.location.href = 'login.html'; // Immediate redirect on logout page
+    localStorage.clear();
+    window.location.href = 'login.html';
     return;
   }
 
-  // ===== DEFAULT ACCOUNT =====
-  if (!localStorage.getItem('users')) {
-    const defaultUsers = [
-      { fullname: 'Admin User', username: 'admin', email: 'admin@fluxplay.com', password: 'player1' }
-    ];
-    localStorage.setItem('users', JSON.stringify(defaultUsers));
-  }
-
-  // ===== LOGIN & REGISTER TAB TOGGLING =====
+  // ===== LOGIN/REGISTER TOGGLE =====
   const loginTab = document.getElementById('loginTab');
   const registerTab = document.getElementById('registerTab');
   const loginForm = document.getElementById('loginForm');
@@ -49,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ===== REGISTER FUNCTION WITH AUTO-LOGIN =====
+  // ===== REGISTER FUNCTION =====
   if (registerForm) {
     registerForm.addEventListener('submit', e => {
       e.preventDefault();
@@ -86,7 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('profile', JSON.stringify({ fullname, username, email }));
-
       alert('Registration successful! Redirecting to dashboard...');
       window.location.href = 'dashboard.html';
     });
@@ -96,7 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (loginForm) {
     loginForm.addEventListener('submit', e => {
       e.preventDefault();
-
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
 
@@ -106,20 +103,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (user) {
         alert('Login successful!');
         localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('profile', JSON.stringify({ fullname: user.fullname, username: user.username, email: user.email }));
+        localStorage.setItem('profile', JSON.stringify(user));
         window.location.href = 'dashboard.html';
       } else {
         alert('Incorrect username or password.');
       }
-    });
-  }
-
-  // ===== LOGOUT BUTTON =====
-  const logoutBtn = document.getElementById('logoutBtn');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
-      localStorage.clear();
-      window.location.href = 'login.html';
     });
   }
 
@@ -128,18 +116,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
   const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
 
-  function openSidebar() {
+  sidebarToggleBtn?.addEventListener('click', () => {
     sidebar?.classList.remove('-translate-x-full');
     sidebar?.classList.add('translate-x-0');
-  }
+  });
 
-  function closeSidebar() {
+  sidebarCloseBtn?.addEventListener('click', () => {
     sidebar?.classList.add('-translate-x-full');
     sidebar?.classList.remove('translate-x-0');
-  }
-
-  sidebarToggleBtn?.addEventListener('click', openSidebar);
-  sidebarCloseBtn?.addEventListener('click', closeSidebar);
+  });
 
   document.addEventListener('click', e => {
     if (
@@ -147,7 +132,8 @@ document.addEventListener('DOMContentLoaded', () => {
       !sidebar.contains(e.target) &&
       !sidebarToggleBtn.contains(e.target)
     ) {
-      closeSidebar();
+      sidebar?.classList.add('-translate-x-full');
+      sidebar?.classList.remove('translate-x-0');
     }
   });
 
@@ -170,22 +156,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function toggleTheme() {
+  themeToggleBtn?.addEventListener('click', () => {
     const isDark = document.documentElement.classList.contains('dark');
     applyTheme(isDark ? 'light' : 'dark');
-  }
-
-  themeToggleBtn?.addEventListener('click', toggleTheme);
+  });
 
   const storedTheme = localStorage.getItem('theme');
   if (storedTheme) {
     applyTheme(storedTheme);
   } else {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    applyTheme(prefersDark ? 'dark' : 'light');
+    applyTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   }
 
-  // ===== STATS PAGE DUMMY DATA =====
+  // ===== STATS PAGE =====
   if (page === 'stats.html') {
     const stats = {
       gamesPlayed: 120,
@@ -197,14 +180,13 @@ document.addEventListener('DOMContentLoaded', () => {
       tournaments: 4,
       activeSince: 'Jul 25, 2025'
     };
-
     for (const [key, value] of Object.entries(stats)) {
       const el = document.getElementById(key);
       if (el) el.textContent = value;
     }
   }
 
-  // ===== SHOP MODAL FUNCTIONALITY =====
+  // ===== SHOP MODAL =====
   const purchaseModal = document.getElementById('purchaseModal');
   const gameTitle = document.getElementById('gameTitle');
   const gamePrice = document.getElementById('gamePrice');
@@ -212,15 +194,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const cancelBtn = document.getElementById('cancelPurchaseBtn');
 
   window.buyGame = (title, price) => {
-    if (purchaseModal && gameTitle && gamePrice) {
-      purchaseModal.classList.remove('hidden');
-      gameTitle.textContent = title;
-      gamePrice.textContent = `Price: ${price}`;
-    }
+    purchaseModal?.classList.remove('hidden');
+    gameTitle.textContent = title;
+    gamePrice.textContent = `Price: ${price}`;
   };
 
   window.confirmPurchase = () => {
-    alert("🎉 Thank you for purchasing!");
+    alert('🎉 Thank you for purchasing!');
     purchaseModal?.classList.add('hidden');
   };
 
@@ -230,5 +210,64 @@ document.addEventListener('DOMContentLoaded', () => {
 
   confirmBtn?.addEventListener('click', window.confirmPurchase);
   cancelBtn?.addEventListener('click', window.closeModal);
+
+  // ===== PROFILE PAGE =====
+  if (page === 'profile.html') {
+    const profileForm = document.getElementById('profileForm');
+    const displayName = document.getElementById('displayName');
+    const usernameInput = document.getElementById('username');
+    const emailInput = document.getElementById('email');
+    const bioInput = document.getElementById('bio');
+    const avatarImg = document.querySelector('img[alt="Avatar"]');
+
+    const savedProfile = JSON.parse(localStorage.getItem('profile')) || {};
+    const savedBio = localStorage.getItem('bio');
+    const savedAvatar = localStorage.getItem('avatar');
+
+    if (savedProfile.username) displayName.textContent = savedProfile.username;
+    if (savedProfile.username) usernameInput.value = savedProfile.username;
+    if (savedProfile.email) emailInput.value = savedProfile.email;
+    if (savedBio) bioInput.value = savedBio;
+    if (savedAvatar) avatarImg.src = savedAvatar;
+
+    profileForm?.addEventListener('submit', e => {
+      e.preventDefault();
+      const newUsername = usernameInput.value.trim();
+      const newEmail = emailInput.value.trim();
+      const newBio = bioInput.value.trim();
+
+      if (!newUsername || !newEmail) {
+        alert('Username and email are required.');
+        return;
+      }
+
+      localStorage.setItem('profile', JSON.stringify({ ...savedProfile, username: newUsername, email: newEmail }));
+      localStorage.setItem('bio', newBio);
+      displayName.textContent = newUsername;
+      alert('✅ Profile updated!');
+    });
+
+    const imageInput = document.createElement('input');
+    imageInput.type = 'file';
+    imageInput.accept = 'image/*';
+    imageInput.style.display = 'none';
+
+    avatarImg.style.cursor = 'pointer';
+    avatarImg.title = 'Click to change avatar';
+    avatarImg.addEventListener('click', () => imageInput.click());
+
+    imageInput.addEventListener('change', () => {
+      const file = imageInput.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          avatarImg.src = reader.result;
+          localStorage.setItem('avatar', reader.result);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    document.body.appendChild(imageInput);
+  }
 });
-        
