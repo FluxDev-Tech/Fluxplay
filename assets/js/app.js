@@ -211,6 +211,15 @@ document.addEventListener('DOMContentLoaded', () => {
   confirmBtn?.addEventListener('click', window.confirmPurchase);
   cancelBtn?.addEventListener('click', window.closeModal);
 
+  // ===== DASHBOARD AVATAR DISPLAY =====
+  if (page === 'dashboard.html') {
+    const avatarImg = document.querySelector('img[alt="Dashboard Avatar"]');
+    const savedAvatar = localStorage.getItem('avatar');
+    if (avatarImg && savedAvatar) {
+      avatarImg.src = savedAvatar;
+    }
+  }
+
   // ===== PROFILE PAGE =====
   if (page === 'profile.html') {
     const profileForm = document.getElementById('profileForm');
@@ -278,4 +287,4 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(imageInput);
   }
 });
-        
+                               
