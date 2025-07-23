@@ -11,6 +11,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // ===== LOGOUT PAGE HANDLER =====
+  if (page === 'logout.html') {
+    // Clear login/session data on logout page
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('profile');
+    // Add any other keys you want to clear here
+
+    // Redirect to login page after 2 seconds
+    setTimeout(() => {
+      window.location.href = 'login.html';
+    }, 2000);
+
+    // Stop further script execution here (optional)
+    return;
+  }
+
   // ===== DEFAULT ACCOUNT =====
   if (!localStorage.getItem('users')) {
     const defaultUsers = [
@@ -112,6 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const logoutBtn = document.getElementById('logoutBtn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
+      // Clear all session data on logout click
       localStorage.clear();
       window.location.href = 'login.html';
     });
@@ -130,14 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function closeSidebar() {
     sidebar?.classList.add('-translate-x-full');
     sidebar?.classList.remove('translate-x-0');
-  }
-
-  function toggleSidebar() {
-    if (sidebar?.classList.contains('-translate-x-full')) {
-      openSidebar();
-    } else {
-      closeSidebar();
-    }
   }
 
   sidebarToggleBtn?.addEventListener('click', openSidebar);
@@ -233,4 +242,4 @@ document.addEventListener('DOMContentLoaded', () => {
   confirmBtn?.addEventListener('click', window.confirmPurchase);
   cancelBtn?.addEventListener('click', window.closeModal);
 });
-    
+      
