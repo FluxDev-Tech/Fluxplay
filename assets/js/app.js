@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ===== DEFAULT ACCOUNT =====
   if (!localStorage.getItem('users')) {
     const defaultUsers = [
-      { username: 'admin', email: 'admin@fluxplay.com', password: 'player1' }
+      { fullname: 'Admin User', username: 'admin', email: 'admin@fluxplay.com', password: 'player1' }
     ];
     localStorage.setItem('users', JSON.stringify(defaultUsers));
   }
@@ -54,35 +54,40 @@ document.addEventListener('DOMContentLoaded', () => {
     registerForm.addEventListener('submit', e => {
       e.preventDefault();
 
+      const fullname = document.getElementById('regFullName').value.trim();
       const username = document.getElementById('regUsername').value.trim();
       const email = document.getElementById('regEmail').value.trim();
       const password = document.getElementById('regPassword').value.trim();
-      const confirmPassword = document.getElementById('regConfirmPassword').value.trim();
 
-      if (!username || !email || !password || !confirmPassword) {
-        alert('All fields are required.');
+      if (!fullname || !username || !email || !password) {
+        alert('Please fill in all fields.');
         return;
       }
 
-      if (password !== confirmPassword) {
-        alert('Passwords do not match.');
+      // Optional: basic email format check
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert('Please enter a valid email address.');
         return;
       }
 
       const users = JSON.parse(localStorage.getItem('users')) || [];
-      const exists = users.some(u => u.username === username || u.email === email);
+      const exists = users.some(u => 
+        u.username.toLowerCase() === username.toLowerCase() || 
+        u.email.toLowerCase() === email.toLowerCase()
+      );
 
       if (exists) {
         alert('Username or email already exists.');
         return;
       }
 
-      users.push({ username, email, password });
+      users.push({ fullname, username, email, password });
       localStorage.setItem('users', JSON.stringify(users));
 
-      // AUTO LOGIN AFTER REGISTER
+      // Auto login after register
       localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('profile', JSON.stringify({ username, email }));
+      localStorage.setItem('profile', JSON.stringify({ fullname, username, email }));
 
       alert('Registration successful! Redirecting to dashboard...');
       window.location.href = 'dashboard.html';
@@ -98,12 +103,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const password = document.getElementById('password').value;
 
       const users = JSON.parse(localStorage.getItem('users')) || [];
-      const user = users.find(u => u.username === username && u.password === password);
+      const user = users.find(u => u.username.toLowerCase() === username.toLowerCase() && u.password === password);
 
       if (user) {
         alert('Login successful!');
         localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('profile', JSON.stringify({ username: user.username, email: user.email }));
+        localStorage.setItem('profile', JSON.stringify({ fullname: user.fullname, username: user.username, email: user.email }));
         window.location.href = 'dashboard.html';
       } else {
         alert('Incorrect username or password.');
@@ -237,4 +242,3 @@ document.addEventListener('DOMContentLoaded', () => {
   confirmBtn?.addEventListener('click', window.confirmPurchase);
   cancelBtn?.addEventListener('click', window.closeModal);
 });
-          
