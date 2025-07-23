@@ -25,10 +25,12 @@ fluxplay/
 ├── assets/
 │   ├── css/
 │   ├── img/
-│   └── js/
+│   └── js/ app.js
+         └── prof.js      
 ├── dashboard.html
 ├── profile.html
 ├── stats.html
+├── shop.html
 ├── login.html
 ├── logout.html
 └── index.html
