@@ -15,9 +15,28 @@
 <body class="bg-gray-900 text-white flex items-center justify-center h-screen">
   <div class="text-center">
     <h1 class="text-4xl font-extrabold text-yellow-400 mb-4">FluxPlay</h1>
-    <p class="text-lg">Logging you out...</p>
+    <p class="text-lg" id="logoutMessage">Logging you out...</p>
   </div>
 
   <script src="assets/js/app.js" defer></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Show logout message
+      const message = document.getElementById('logoutMessage');
+      message.textContent = 'Logging you out...';
+
+      // Clear session data
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('profile');
+      localStorage.removeItem('avatar');
+      localStorage.removeItem('bio');
+
+      // Redirect to login.html after 1.5 seconds
+      setTimeout(() => {
+        window.location.replace('login.html');
+      }, 1500);
+    });
+  </script>
 </body>
 </html>
