@@ -32,6 +32,15 @@ document.addEventListener('DOMContentLoaded', () => {
     avatarImg.src = savedAvatar;
   }
 
+  // ===== SHOW PROFILE USERNAME (profile.html) =====
+  if (['dashboard.html', 'profile.html', 'stats.html'].includes(page)) {
+    const profile = JSON.parse(localStorage.getItem('profile'));
+    const displayName = document.getElementById('displayName');
+    if (displayName && profile?.username) {
+      displayName.textContent = profile.username;
+    }
+  }
+  
   // Handle form submission
   profileForm.addEventListener('submit', e => {
     e.preventDefault();
