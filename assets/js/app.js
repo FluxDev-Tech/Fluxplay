@@ -21,8 +21,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ===== LOGOUT HANDLER =====
   if (page === 'logout.html') {
-    localStorage.clear();
-    window.location.href = 'login.html';
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('profile');
+    localStorage.removeItem('avatar');
+    localStorage.removeItem('bio');
+    window.location.replace('login.html');
     return;
   }
 
@@ -287,4 +290,4 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(imageInput);
   }
 });
-                               
+                          
