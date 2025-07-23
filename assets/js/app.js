@@ -261,8 +261,15 @@ document.addEventListener('DOMContentLoaded', () => {
       if (file && file.type.startsWith('image/')) {
         const reader = new FileReader();
         reader.onload = () => {
+          const imageName = `avatar_${Date.now()}.png`;
+          const link = document.createElement('a');
+          link.href = reader.result;
+          link.download = imageName;
+          link.click();
+
           avatarImg.src = reader.result;
           localStorage.setItem('avatar', reader.result);
+          window.location.href = 'dashboard.html';
         };
         reader.readAsDataURL(file);
       }
@@ -271,3 +278,4 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(imageInput);
   }
 });
+        
