@@ -18,23 +18,35 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
   }
-
-  // ===== LOGOUT HANDLER =====
+  
+  // ===== LOGOUT HANDLER (Improved) =====
   if (page === 'logout.html') {
     const logoutMessage = document.querySelector('p');
     if (logoutMessage) logoutMessage.textContent = 'Logging you out...';
 
+    // Clear all session data
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('profile');
     localStorage.removeItem('avatar');
     localStorage.removeItem('bio');
 
+    // Optional: Clear shop purchases, themes, etc.
+    // localStorage.removeItem('theme');
+
+    // Prevent back navigation to dashboard
+    history.pushState(null, null, location.href);
+    window.onpopstate = () => {
+      history.go(1);
+    };
+
+    // Redirect after short delay
     setTimeout(() => {
-      window.location.href = 'login.html';
-    }, 1500); // Delay to show logout message
+      window.location.replace('login.html');
+    }, 1500);
 
     return;
   }
+  
 
   // ===== LOGIN/REGISTER TOGGLE =====
   const loginTab = document.getElementById('loginTab');
