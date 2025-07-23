@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (page === 'logout.html') {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('profile');
-    setTimeout(() => window.location.href = 'login.html', 2000);
+    window.location.href = 'login.html'; // Immediate redirect on logout page
     return;
   }
 
@@ -64,7 +64,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Optional: basic email format check
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         alert('Please enter a valid email address.');
@@ -72,8 +71,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const users = JSON.parse(localStorage.getItem('users')) || [];
-      const exists = users.some(u => 
-        u.username.toLowerCase() === username.toLowerCase() || 
+      const exists = users.some(u =>
+        u.username.toLowerCase() === username.toLowerCase() ||
         u.email.toLowerCase() === email.toLowerCase()
       );
 
@@ -85,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
       users.push({ fullname, username, email, password });
       localStorage.setItem('users', JSON.stringify(users));
 
-      // Auto login after register
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('profile', JSON.stringify({ fullname, username, email }));
 
@@ -242,3 +240,4 @@ document.addEventListener('DOMContentLoaded', () => {
   confirmBtn?.addEventListener('click', window.confirmPurchase);
   cancelBtn?.addEventListener('click', window.closeModal);
 });
+        
