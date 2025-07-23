@@ -4,8 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Logging Out | FluxPlay</title>
+
+  <!-- Tailwind CSS -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+
+  <!-- Orbitron Font -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet" />
+
   <style>
     body {
       font-family: 'Orbitron', sans-serif;
@@ -18,25 +23,7 @@
     <p class="text-lg" id="logoutMessage">Logging you out...</p>
   </div>
 
+  <!-- ONLY external app.js -->
   <script src="assets/js/app.js" defer></script>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Show logout message
-      const message = document.getElementById('logoutMessage');
-      message.textContent = 'Logging you out...';
-
-      // Clear session data
-      localStorage.removeItem('isLoggedIn');
-      localStorage.removeItem('profile');
-      localStorage.removeItem('avatar');
-      localStorage.removeItem('bio');
-
-      // Redirect to login.html after 1.5 seconds
-      setTimeout(() => {
-        window.location.replace('login.html');
-      }, 1500);
-    });
-  </script>
 </body>
 </html>
