@@ -20,32 +20,26 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   // ===== LOGOUT HANDLER (Improved) =====
-  if (page === 'logout.html') {
-    const logoutMessage = document.querySelector('p');
-    if (logoutMessage) logoutMessage.textContent = 'Logging you out...';
+if (page === 'logout.html') {
+  const logoutMessage = document.getElementById('logoutMessage') || document.querySelector('p');
+  if (logoutMessage) logoutMessage.textContent = 'Logging you out...';
 
-    // Clear all session data
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('profile');
-    localStorage.removeItem('avatar');
-    localStorage.removeItem('bio');
+  localStorage.removeItem('isLoggedIn');
+  localStorage.removeItem('profile');
+  localStorage.removeItem('avatar');
+  localStorage.removeItem('bio');
 
-    // Optional: Clear shop purchases, themes, etc.
-    // localStorage.removeItem('theme');
+  // Prevent going back to dashboard
+  history.pushState(null, null, location.href);
+  window.onpopstate = () => history.go(1);
 
-    // Prevent back navigation to dashboard
-    history.pushState(null, null, location.href);
-    window.onpopstate = () => {
-      history.go(1);
-    };
+  setTimeout(() => {
+    window.location.replace('/login.html'); // <-- use absolute path for Vercel
+  }, 1500);
 
-    // Redirect after short delay
-    setTimeout(() => {
-      window.location.replace('login.html');
-    }, 1500);
-
-    return;
-  }
+  return;
+}
+  
   
 
   // ===== LOGIN/REGISTER TOGGLE =====
