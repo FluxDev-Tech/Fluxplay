@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ===== REGISTER FUNCTION =====
+  // ===== REGISTER FUNCTION WITH AUTO-LOGIN =====
   if (registerForm) {
     registerForm.addEventListener('submit', e => {
       e.preventDefault();
@@ -80,8 +80,12 @@ document.addEventListener('DOMContentLoaded', () => {
       users.push({ username, email, password });
       localStorage.setItem('users', JSON.stringify(users));
 
-      alert('Registration successful. Please login.');
-      loginTab?.click();
+      // AUTO LOGIN AFTER REGISTER
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('profile', JSON.stringify({ username, email }));
+
+      alert('Registration successful! Redirecting to dashboard...');
+      window.location.href = 'dashboard.html';
     });
   }
 
@@ -233,4 +237,4 @@ document.addEventListener('DOMContentLoaded', () => {
   confirmBtn?.addEventListener('click', window.confirmPurchase);
   cancelBtn?.addEventListener('click', window.closeModal);
 });
-    
+          
