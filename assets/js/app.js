@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const page = window.location.pathname.split('/').pop();
+  const route = window.location.pathname.split('/')[1]; // e.g., 'dashboard'
 
   // ===== DEFAULT ACCOUNT SETUP =====
   if (!localStorage.getItem('users')) {
@@ -10,17 +10,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ===== AUTH GUARD =====
-  const protectedPages = ['dashboard.html', 'profile.html', 'stats.html'];
-  if (protectedPages.includes(page)) {
+  const protectedRoutes = ['dashboard', 'profile', 'stats'];
+  if (protectedRoutes.includes(route)) {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     if (isLoggedIn !== 'true') {
-      window.location.href = 'login.html';
+      window.location.href = '/login';
       return;
     }
   }
 
-  // ===== LOGOUT HANDLER (Improved & Vercel-Compatible) =====
-  if (page === 'logout.html') {
+  // ===== LOGOUT HANDLER =====
+  if (route === 'logout') {
     const logoutMessage = document.getElementById('logoutMessage') || document.querySelector('p');
     if (logoutMessage) logoutMessage.textContent = 'Logging you out...';
 
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.onpopstate = () => history.go(1);
 
     setTimeout(() => {
-      window.location.replace('/login.html'); // works on Vercel
+      window.location.replace('/login');
     }, 1500);
 
     return;
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('profile', JSON.stringify({ fullname, username, email }));
 
       alert('Registration successful! Redirecting to dashboard...');
-      window.location.href = 'dashboard.html';
+      window.location.href = '/dashboard';
     });
   }
 
@@ -113,15 +113,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const users = JSON.parse(localStorage.getItem('users')) || [];
       const user = users.find(u =>
-        u.username.toLowerCase() === username.toLowerCase() &&
-        u.password === password
+        u.username.toLowerCase() === username.toLowerCase() && u.password === password
       );
 
       if (user) {
         alert('Login successful!');
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('profile', JSON.stringify(user));
-        window.location.href = 'dashboard.html';
+        window.location.href = '/dashboard';
       } else {
         alert('Incorrect username or password.');
       }
@@ -186,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ===== STATS PAGE =====
-  if (page === 'stats.html') {
+  if (route === 'stats') {
     const stats = {
       gamesPlayed: 120,
       wins: 85,
@@ -229,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
   cancelBtn?.addEventListener('click', window.closeModal);
 
   // ===== DASHBOARD AVATAR DISPLAY =====
-  if (page === 'dashboard.html') {
+  if (route === 'dashboard') {
     const avatarImg = document.querySelector('img[alt="Dashboard Avatar"]');
     const savedAvatar = localStorage.getItem('avatar');
     if (avatarImg && savedAvatar) {
@@ -238,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ===== PROFILE PAGE =====
-  if (page === 'profile.html') {
+  if (route === 'profile') {
     const profileForm = document.getElementById('profileForm');
     const displayName = document.getElementById('displayName');
     const usernameInput = document.getElementById('username');
@@ -287,15 +286,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (file && file.type.startsWith('image/')) {
         const reader = new FileReader();
         reader.onload = () => {
-          const imageName = `avatar_${Date.now()}.png`;
-          const link = document.createElement('a');
-          link.href = reader.result;
-          link.download = imageName;
-          link.click();
-
           avatarImg.src = reader.result;
           localStorage.setItem('avatar', reader.result);
-          window.location.href = 'dashboard.html';
+          window.location.href = '/dashboard';
         };
         reader.readAsDataURL(file);
       }
