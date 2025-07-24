@@ -18,29 +18,26 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
   }
-  
-  // ===== LOGOUT HANDLER (Improved) =====
-if (page === 'logout.html') {
-  const logoutMessage = document.getElementById('logoutMessage') || document.querySelector('p');
-  if (logoutMessage) logoutMessage.textContent = 'Logging you out...';
 
-  localStorage.removeItem('isLoggedIn');
-  localStorage.removeItem('profile');
-  localStorage.removeItem('avatar');
-  localStorage.removeItem('bio');
+  // ===== LOGOUT HANDLER (Improved & Vercel-Compatible) =====
+  if (page === 'logout.html') {
+    const logoutMessage = document.getElementById('logoutMessage') || document.querySelector('p');
+    if (logoutMessage) logoutMessage.textContent = 'Logging you out...';
 
-  // Prevent going back to dashboard
-  history.pushState(null, null, location.href);
-  window.onpopstate = () => history.go(1);
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('profile');
+    localStorage.removeItem('avatar');
+    localStorage.removeItem('bio');
 
-  setTimeout(() => {
-    window.location.replace('/login.html'); // <-- use absolute path for Vercel
-  }, 1500);
+    history.pushState(null, null, location.href);
+    window.onpopstate = () => history.go(1);
 
-  return;
-}
-  
-  
+    setTimeout(() => {
+      window.location.replace('/login.html'); // works on Vercel
+    }, 1500);
+
+    return;
+  }
 
   // ===== LOGIN/REGISTER TOGGLE =====
   const loginTab = document.getElementById('loginTab');
@@ -98,9 +95,9 @@ if (page === 'logout.html') {
 
       users.push({ fullname, username, email, password });
       localStorage.setItem('users', JSON.stringify(users));
-
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('profile', JSON.stringify({ fullname, username, email }));
+
       alert('Registration successful! Redirecting to dashboard...');
       window.location.href = 'dashboard.html';
     });
@@ -110,11 +107,15 @@ if (page === 'logout.html') {
   if (loginForm) {
     loginForm.addEventListener('submit', e => {
       e.preventDefault();
+
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
 
       const users = JSON.parse(localStorage.getItem('users')) || [];
-      const user = users.find(u => u.username.toLowerCase() === username.toLowerCase() && u.password === password);
+      const user = users.find(u =>
+        u.username.toLowerCase() === username.toLowerCase() &&
+        u.password === password
+      );
 
       if (user) {
         alert('Login successful!');
@@ -303,4 +304,4 @@ if (page === 'logout.html') {
     document.body.appendChild(imageInput);
   }
 });
-      
+    
