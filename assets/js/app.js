@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const route = window.location.pathname.split('/')[1]; // e.g., 'dashboard'
+  const page = window.location.pathname.split('/').pop();
 
   // ===== DEFAULT ACCOUNT SETUP =====
   if (!localStorage.getItem('users')) {
@@ -10,18 +10,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ===== AUTH GUARD =====
-  const protectedRoutes = ['dashboard', 'profile', 'stats'];
-  if (protectedRoutes.includes(route)) {
+  const protectedPages = ['dashboard.html', 'profile.html', 'stats.html'];
+  if (protectedPages.includes(page)) {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     if (isLoggedIn !== 'true') {
-      window.location.href = '/login';
+      window.location.href = 'login.html';
       return;
     }
   }
 
   // ===== LOGOUT HANDLER =====
-  if (route === 'logout') {
-    const logoutMessage = document.getElementById('logoutMessage') || document.querySelector('p');
+  if (page === 'logout.html') {
+    const logoutMessage = document.querySelector('p');
     if (logoutMessage) logoutMessage.textContent = 'Logging you out...';
 
     localStorage.removeItem('isLoggedIn');
@@ -29,12 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.removeItem('avatar');
     localStorage.removeItem('bio');
 
-    history.pushState(null, null, location.href);
-    window.onpopstate = () => history.go(1);
-
     setTimeout(() => {
-      window.location.replace('/login');
-    }, 1500);
+      window.location.href = 'index.html';
+    }, 1500); // Delay to show logout message
 
     return;
   }
@@ -95,11 +92,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       users.push({ fullname, username, email, password });
       localStorage.setItem('users', JSON.stringify(users));
+
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('profile', JSON.stringify({ fullname, username, email }));
-
       alert('Registration successful! Redirecting to dashboard...');
-      window.location.href = '/dashboard';
+      window.location.href = 'dashboard.html';
     });
   }
 
@@ -107,20 +104,17 @@ document.addEventListener('DOMContentLoaded', () => {
   if (loginForm) {
     loginForm.addEventListener('submit', e => {
       e.preventDefault();
-
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
 
       const users = JSON.parse(localStorage.getItem('users')) || [];
-      const user = users.find(u =>
-        u.username.toLowerCase() === username.toLowerCase() && u.password === password
-      );
+      const user = users.find(u => u.username.toLowerCase() === username.toLowerCase() && u.password === password);
 
       if (user) {
         alert('Login successful!');
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('profile', JSON.stringify(user));
-        window.location.href = '/dashboard';
+        window.location.href = 'dashboard.html';
       } else {
         alert('Incorrect username or password.');
       }
@@ -185,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ===== STATS PAGE =====
-  if (route === 'stats') {
+  if (page === 'stats.html') {
     const stats = {
       gamesPlayed: 120,
       wins: 85,
@@ -228,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
   cancelBtn?.addEventListener('click', window.closeModal);
 
   // ===== DASHBOARD AVATAR DISPLAY =====
-  if (route === 'dashboard') {
+  if (page === 'dashboard.html') {
     const avatarImg = document.querySelector('img[alt="Dashboard Avatar"]');
     const savedAvatar = localStorage.getItem('avatar');
     if (avatarImg && savedAvatar) {
@@ -237,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ===== PROFILE PAGE =====
-  if (route === 'profile') {
+  if (page === 'profile.html') {
     const profileForm = document.getElementById('profileForm');
     const displayName = document.getElementById('displayName');
     const usernameInput = document.getElementById('username');
@@ -286,9 +280,15 @@ document.addEventListener('DOMContentLoaded', () => {
       if (file && file.type.startsWith('image/')) {
         const reader = new FileReader();
         reader.onload = () => {
+          const imageName = `avatar_${Date.now()}.png`;
+          const link = document.createElement('a');
+          link.href = reader.result;
+          link.download = imageName;
+          link.click();
+
           avatarImg.src = reader.result;
           localStorage.setItem('avatar', reader.result);
-          window.location.href = '/dashboard';
+          window.location.href = 'dashboard.html';
         };
         reader.readAsDataURL(file);
       }
@@ -297,4 +297,4 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(imageInput);
   }
 });
-    
+      
