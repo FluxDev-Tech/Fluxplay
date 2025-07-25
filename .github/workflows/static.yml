@@ -1,9 +1,8 @@
-# .github/workflows/static.yml
 name: 🚀 Deploy Fluxplay to GitHub Pages
 
 on:
   push:
-    branches: ["yuji"] # Change this to your actual deployment branch
+    branches: ["yuji"]  # or your deployment branch
   workflow_dispatch:
 
 permissions:
@@ -16,25 +15,35 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
-    name: 📦 Build and Deploy
+  build-and-deploy:
+    name: Build & Deploy
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deploy.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 Checkout Repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: ⚙️ Setup GitHub Pages
+      - name: Install dependencies
+        run: |
+          # e.g. npm ci or other install commands
+          npm ci
+
+      - name: Build site
+        run: |
+          # e.g. npm run build or hugo etc.
+          npm run build
+
+      - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: 📤 Upload Static Files
+      - name: Upload build output
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "."
+          path: ./dist   # change to your build output directory
 
-      - name: 🚀 Deploy to GitHub Pages
-        id: deployment
+      - name: Deploy to GitHub Pages
+        id: deploy
         uses: actions/deploy-pages@v4
         
