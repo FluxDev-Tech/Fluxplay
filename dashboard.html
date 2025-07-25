@@ -4,10 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>FluxPlay | Dashboard</title>
+
+  <!-- Tailwind CSS & Custom Styles -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/dashboard.css" />
-  <style>
-    <body>
+</head>
+<body>
+<script>
+  const users = JSON.parse(localStorage.getItem('users')) || [];
+  const profile = JSON.parse(localStorage.getItem('profile'));
+  if (!profile) window.location.href = 'login.html';
+</script>
+
 <div class="min-h-screen flex flex-col lg:flex-row">
   <!-- Sidebar -->
   <aside id="sidebar" class="sidebar">
@@ -24,7 +33,12 @@
     </nav>
     <div class="sidebar-footer">
       <button id="themeToggleBtn" class="theme-toggle">
-        <!-- Dark/light icons... -->
+        <svg id="sunIcon" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364-6.364l-1.414 1.414M7.05 16.95l-1.414 1.414M16.95 16.95l1.414 1.414M7.05 7.05L5.636 5.636M12 7a5 5 0 110 10 5 5 0 010-10z" />
+        </svg>
+        <svg id="moonIcon" class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M17.293 13.293a8 8 0 11-10.586-10.586 7 7 0 0010.586 10.586z" />
+        </svg>
         <span>Dark Mode</span>
       </button>
     </div>
@@ -96,41 +110,31 @@
 <script>
   const profileData = JSON.parse(localStorage.getItem('profile'));
   const username = profileData?.username || 'Unknown User';
-
-  // Show logged in user name
   document.getElementById('displayName').textContent = username;
 
-  // Display login frequency data
   function displayLoginFrequency() {
     const loginCounts = JSON.parse(localStorage.getItem('loginCounts')) || {};
     const container = document.getElementById('loginFrequencyContainer');
     container.innerHTML = '';
-
-    // Sort users by login count desc
     const sortedUsers = Object.entries(loginCounts).sort((a, b) => b[1] - a[1]);
-
     sortedUsers.forEach(([user, count]) => {
       const p = document.createElement('p');
       p.textContent = `${user}: ${count} logins`;
       container.appendChild(p);
     });
-
     if (sortedUsers.length === 0) {
       container.textContent = 'No login data available.';
     }
   }
 
-  // Display purchase history data
   function displayPurchases() {
     const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
     const container = document.getElementById('purchaseListContainer');
     container.innerHTML = '';
-
     if (purchases.length === 0) {
       container.textContent = 'No purchases yet.';
       return;
     }
-
     purchases.forEach(({ username, gameTitle, date }) => {
       const p = document.createElement('p');
       p.textContent = `${username} bought "${gameTitle}" on ${new Date(date).toLocaleString()}`;
@@ -138,7 +142,6 @@
     });
   }
 
-  // Initialize display
   displayLoginFrequency();
   displayPurchases();
 </script>
