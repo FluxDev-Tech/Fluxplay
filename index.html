@@ -1,145 +1,204 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>FluxPlay | Login</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FluxPlay | Login</title>
 
-  <!-- Tailwind CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Orbitron Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet" />
+    <!-- Orbitron Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap"
+      rel="stylesheet"
+    />
 
-  <style>
-    body {
-      font-family: 'Orbitron', sans-serif;
-    }
-
-    /* Fade-in animation for forms */
-    .animate-fadeIn {
-      animation: fadeIn 0.5s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
+    <style>
+      body {
+        font-family: 'Orbitron', sans-serif;
       }
-      to {
-        opacity: 1;
-        transform: translateY(0);
+
+      .active-tab {
+        @apply bg-yellow-400 text-gray-900 shadow-lg;
       }
-    }
-  </style>
-</head>
 
-<body class="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white transition duration-300">
-  <main class="w-full max-w-md bg-gray-900/95 backdrop-blur-lg p-10 rounded-3xl shadow-xl border border-yellow-500">
-    <h1 class="text-4xl font-extrabold text-center text-yellow-400 mb-10 tracking-wide">FluxPlay</h1>
+      .inactive-tab {
+        @apply bg-gray-800 text-white hover:bg-gray-700;
+      }
 
-    <!-- Tabs -->
-    <div class="flex justify-center mb-8 space-x-6">
-      <button id="loginTab" class="tab-btn px-8 py-3 rounded-full font-semibold text-lg bg-yellow-400 text-gray-900 shadow-lg transition duration-300">
-        Login
-      </button>
-      <button id="registerTab" class="tab-btn px-8 py-3 rounded-full font-semibold text-lg bg-gray-700 hover:bg-gray-600 text-white transition duration-300">
-        Register
-      </button>
-    </div>
+      .animate-fadeIn {
+        animation: fadeIn 0.5s ease-in-out;
+      }
 
-    <!-- Login Form -->
-    <form id="loginForm" class="form-section flex flex-col gap-6 animate-fadeIn" novalidate>
-      <label class="flex flex-col text-sm font-medium text-gray-300">
-        Username
-        <input
-          id="username"
-          name="username"
-          type="text"
-          required
-          placeholder="Enter username"
-          class="mt-2 px-5 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-yellow-400 focus:ring-opacity-60"
-        />
-      </label>
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
 
-      <label class="flex flex-col text-sm font-medium text-gray-300">
-        Password
-        <input
-          id="password"
-          name="password"
-          type="password"
-          required
-          placeholder="Enter password"
-          class="mt-2 px-5 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-yellow-400 focus:ring-opacity-60"
-        />
-      </label>
+  <body
+    class="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white"
+  >
+    <main
+      class="w-full max-w-md bg-gray-900/80 backdrop-blur-2xl p-10 rounded-3xl shadow-2xl border border-yellow-400 animate-fadeIn"
+    >
+      <h1
+        class="text-4xl font-extrabold text-center text-yellow-400 mb-10 tracking-widest drop-shadow"
+      >
+        FluxPlay
+      </h1>
 
-      <button type="submit" class="mt-4 bg-yellow-400 text-gray-900 font-extrabold py-4 rounded-2xl hover:bg-yellow-500 transition duration-300 shadow-md">
-        Login
-      </button>
+      <!-- Tabs -->
+      <div class="flex justify-center mb-8 gap-6">
+        <button
+          id="loginTab"
+          class="tab-btn px-6 py-3 rounded-full font-semibold text-lg active-tab transition-all duration-300"
+        >
+          Login
+        </button>
+        <button
+          id="registerTab"
+          class="tab-btn px-6 py-3 rounded-full font-semibold text-lg inactive-tab transition-all duration-300"
+        >
+          Register
+        </button>
+      </div>
 
-      <p class="text-center text-xs text-gray-400 mt-2">
-        pass: <code>admin</code> / <code>player1</code>
-      </p>
-    </form>
+      <!-- Login Form -->
+      <form
+        id="loginForm"
+        class="form-section flex flex-col gap-6 animate-fadeIn"
+        novalidate
+      >
+        <label class="flex flex-col text-sm font-medium text-gray-300">
+          Username
+          <input
+            id="username"
+            type="text"
+            required
+            placeholder="Enter username"
+            class="mt-2 px-5 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-yellow-400"
+          />
+        </label>
 
-    <!-- Register Form -->
-    <form id="registerForm" class="form-section hidden flex flex-col gap-6 animate-fadeIn" novalidate>
-      <label class="flex flex-col text-sm font-medium text-gray-300">
-        Full Name
-        <input
-          id="regFullName"
-          name="fullname"
-          type="text"
-          required
-          placeholder="Your full name"
-          class="mt-2 px-5 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-yellow-400 focus:ring-opacity-60"
-        />
-      </label>
+        <label class="flex flex-col text-sm font-medium text-gray-300">
+          Password
+          <input
+            id="password"
+            type="password"
+            required
+            placeholder="Enter password"
+            class="mt-2 px-5 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-yellow-400"
+          />
+        </label>
 
-      <label class="flex flex-col text-sm font-medium text-gray-300">
-        Username
-        <input
-          id="regUsername"
-          name="username"
-          type="text"
-          required
-          placeholder="Choose a username"
-          class="mt-2 px-5 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-yellow-400 focus:ring-opacity-60"
-        />
-      </label>
+        <button
+          type="submit"
+          class="mt-4 bg-yellow-400 text-gray-900 font-extrabold py-4 rounded-xl hover:bg-yellow-500 transition-all shadow-md"
+        >
+          Login
+        </button>
 
-      <label class="flex flex-col text-sm font-medium text-gray-300">
-        Email
-        <input
-          id="regEmail"
-          name="email"
-          type="email"
-          required
-          placeholder="Your email address"
-          class="mt-2 px-5 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-yellow-400 focus:ring-opacity-60"
-        />
-      </label>
+        <p class="text-center text-xs text-gray-400 mt-2">
+          Pass: <code>admin</code> / <code>player1</code>
+        </p>
+      </form>
 
-      <label class="flex flex-col text-sm font-medium text-gray-300">
-        Password
-        <input
-          id="regPassword"
-          name="password"
-          type="password"
-          required
-          placeholder="Create a strong password"
-          class="mt-2 px-5 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-yellow-400 focus:ring-opacity-60"
-        />
-      </label>
+      <!-- Register Form -->
+      <form
+        id="registerForm"
+        class="form-section hidden flex-col gap-6 animate-fadeIn"
+        novalidate
+      >
+        <label class="flex flex-col text-sm font-medium text-gray-300">
+          Full Name
+          <input
+            id="regFullName"
+            type="text"
+            required
+            placeholder="Your full name"
+            class="mt-2 px-5 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-yellow-400"
+          />
+        </label>
 
-      <button type="submit" class="mt-4 bg-yellow-400 text-gray-900 font-extrabold py-4 rounded-2xl hover:bg-yellow-500 transition duration-300 shadow-md">
-        Create Account
-      </button>
-    </form>
-  </main>
+        <label class="flex flex-col text-sm font-medium text-gray-300">
+          Username
+          <input
+            id="regUsername"
+            type="text"
+            required
+            placeholder="Choose a username"
+            class="mt-2 px-5 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-yellow-400"
+          />
+        </label>
 
-  <!-- Fixed script path for Vercel -->
-  <script src="/assets/js/app.js" defer></script>
-</body>
+        <label class="flex flex-col text-sm font-medium text-gray-300">
+          Email
+          <input
+            id="regEmail"
+            type="email"
+            required
+            placeholder="Your email address"
+            class="mt-2 px-5 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-yellow-400"
+          />
+        </label>
+
+        <label class="flex flex-col text-sm font-medium text-gray-300">
+          Password
+          <input
+            id="regPassword"
+            type="password"
+            required
+            placeholder="Create a strong password"
+            class="mt-2 px-5 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-yellow-400"
+          />
+        </label>
+
+        <button
+          type="submit"
+          class="mt-4 bg-yellow-400 text-gray-900 font-extrabold py-4 rounded-xl hover:bg-yellow-500 transition-all shadow-md"
+        >
+          Create Account
+        </button>
+      </form>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const loginTab = document.getElementById('loginTab');
+        const registerTab = document.getElementById('registerTab');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+
+        loginTab.addEventListener('click', () => {
+          loginForm.classList.remove('hidden');
+          registerForm.classList.add('hidden');
+          loginTab.classList.add('active-tab');
+          loginTab.classList.remove('inactive-tab');
+          registerTab.classList.remove('active-tab');
+          registerTab.classList.add('inactive-tab');
+        });
+
+        registerTab.addEventListener('click', () => {
+          registerForm.classList.remove('hidden');
+          loginForm.classList.add('hidden');
+          registerTab.classList.add('active-tab');
+          registerTab.classList.remove('inactive-tab');
+          loginTab.classList.remove('active-tab');
+          loginTab.classList.add('inactive-tab');
+        });
+      });
+    </script>
+
+    <!-- Main App Script -->
+    <script src="/assets/js/app.js" defer></script>
+  </body>
 </html>
