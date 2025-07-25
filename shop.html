@@ -11,114 +11,91 @@
     body {
       font-family: 'Orbitron', sans-serif;
     }
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-    ::-webkit-scrollbar-thumb {
-      background-color: #4f46e5;
-      border-radius: 4px;
-    }
+
     .game-card:hover {
       transform: scale(1.05);
-      box-shadow: 0 10px 20px rgba(79, 70, 229, 0.4);
+      box-shadow: 0 10px 20px rgba(250, 204, 21, 0.4);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       cursor: pointer;
     }
-    .btn-primary {
-      background: linear-gradient(90deg, #4f46e5, #6366f1);
-      color: #ffffff;
-      font-weight: 700;
-      transition: background 0.3s ease;
-    }
-    .btn-primary:hover {
-      background: linear-gradient(90deg, #4338ca, #4f46e5);
-      color: #fff;
-    }
-    .btn-secondary {
-      background-color: #ef4444;
-      color: white;
-      font-weight: 700;
-    }
-    .btn-secondary:hover {
-      background-color: #b91c1c;
-    }
+
     .notification {
       position: fixed;
-      top: 1rem;
+      bottom: 1rem;
       right: 1rem;
-      background-color: #4ade80;
-      color: #1e3a8a;
+      background-color: #facc15;
+      color: #1f2937;
       padding: 1rem 1.5rem;
-      border-radius: 0.5rem;
+      border-radius: 0.75rem;
       font-weight: bold;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      box-shadow: 0 0 12px rgba(0,0,0,0.5);
       z-index: 1000;
       display: none;
     }
   </style>
 </head>
-<body class="bg-blue-950 text-white">
+<body class="bg-gray-900 text-white">
 
 <div class="min-h-screen p-8">
-  <header class="flex items-center justify-between mb-8">
-    <h1 class="text-4xl font-extrabold text-indigo-400">FluxPlay Game Shop</h1>
-    <a href="dashboard.html" class="text-indigo-300 hover:underline">⬅ Back to Dashboard</a>
+  <header class="flex items-center justify-between mb-10">
+    <h1 class="text-4xl font-extrabold text-yellow-400">FluxPlay Game Shop</h1>
+    <a href="dashboard.html" class="text-yellow-300 hover:underline">⬅ Back to Dashboard</a>
   </header>
 
   <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-    <!-- Game Cards -->
-    <div class="game-card bg-indigo-900 p-6 rounded-2xl">
+    <!-- Game Card -->
+    <div class="game-card bg-gray-800 p-6 rounded-2xl">
       <img src="https://placehold.co/300x180" class="rounded-xl mb-4" alt="Cyber Rage">
       <h3 class="text-2xl font-bold">Cyber Rage</h3>
-      <p class="text-sm text-indigo-300">Action RPG | 2025</p>
+      <p class="text-sm text-yellow-300">Action RPG | 2025</p>
       <div class="flex justify-between items-center mt-4">
-        <span class="text-indigo-300 font-bold text-xl">$49.99</span>
-        <button onclick="buyGame('Cyber Rage', '$49.99')" class="btn-primary px-5 py-2 rounded-xl">Buy</button>
+        <span class="text-yellow-400 font-bold text-xl">$49.99</span>
+        <button onclick="buyGame('Cyber Rage', '$49.99')" class="bg-yellow-400 text-gray-900 font-bold px-4 py-2 rounded-xl hover:bg-yellow-500 transition">Buy</button>
       </div>
     </div>
 
-    <div class="game-card bg-indigo-900 p-6 rounded-2xl">
+    <div class="game-card bg-gray-800 p-6 rounded-2xl">
       <img src="https://placehold.co/300x180" class="rounded-xl mb-4" alt="Dragon Valley">
       <h3 class="text-2xl font-bold">Dragon Valley</h3>
-      <p class="text-sm text-indigo-300">Fantasy MMORPG | 2024</p>
+      <p class="text-sm text-yellow-300">Fantasy MMORPG | 2024</p>
       <div class="flex justify-between items-center mt-4">
-        <span class="text-indigo-300 font-bold text-xl">$39.99</span>
-        <button onclick="buyGame('Dragon Valley', '$39.99')" class="btn-primary px-5 py-2 rounded-xl">Buy</button>
+        <span class="text-yellow-400 font-bold text-xl">$39.99</span>
+        <button onclick="buyGame('Dragon Valley', '$39.99')" class="bg-yellow-400 text-gray-900 font-bold px-4 py-2 rounded-xl hover:bg-yellow-500 transition">Buy</button>
       </div>
     </div>
 
-    <div class="game-card bg-indigo-900 p-6 rounded-2xl">
+    <div class="game-card bg-gray-800 p-6 rounded-2xl">
       <img src="https://placehold.co/300x180" class="rounded-xl mb-4" alt="Mecha Storm">
       <h3 class="text-2xl font-bold">Mecha Storm</h3>
-      <p class="text-sm text-indigo-300">Mech Battles | 2023</p>
+      <p class="text-sm text-yellow-300">Mech Battles | 2023</p>
       <div class="flex justify-between items-center mt-4">
-        <span class="text-indigo-300 font-bold text-xl">$29.99</span>
-        <button onclick="buyGame('Mecha Storm', '$29.99')" class="btn-primary px-5 py-2 rounded-xl">Buy</button>
+        <span class="text-yellow-400 font-bold text-xl">$29.99</span>
+        <button onclick="buyGame('Mecha Storm', '$29.99')" class="bg-yellow-400 text-gray-900 font-bold px-4 py-2 rounded-xl hover:bg-yellow-500 transition">Buy</button>
       </div>
     </div>
 
-    <div class="game-card bg-indigo-900 p-6 rounded-2xl">
+    <div class="game-card bg-gray-800 p-6 rounded-2xl">
       <img src="https://placehold.co/300x180" class="rounded-xl mb-4" alt="Space Odyssey">
       <h3 class="text-2xl font-bold">Space Odyssey</h3>
-      <p class="text-sm text-indigo-300">Space Sim | 2022</p>
+      <p class="text-sm text-yellow-300">Space Sim | 2022</p>
       <div class="flex justify-between items-center mt-4">
-        <span class="text-indigo-300 font-bold text-xl">$24.99</span>
-        <button onclick="buyGame('Space Odyssey', '$24.99')" class="btn-primary px-5 py-2 rounded-xl">Buy</button>
+        <span class="text-yellow-400 font-bold text-xl">$24.99</span>
+        <button onclick="buyGame('Space Odyssey', '$24.99')" class="bg-yellow-400 text-gray-900 font-bold px-4 py-2 rounded-xl hover:bg-yellow-500 transition">Buy</button>
       </div>
     </div>
   </section>
 </div>
 
-<!-- Notification -->
+<!-- Purchase Notification -->
 <div id="notification" class="notification"></div>
 
 <script>
   function buyGame(title, price) {
-    const message = `🎉 You bought ${title} for ${price}`;
+    const message = `🎮 You bought ${title} for ${price}`;
     const notif = document.getElementById('notification');
     notif.textContent = message;
     notif.style.display = 'block';
-    setTimeout(() => notif.style.display = 'none', 3000);
+    setTimeout(() => notif.style.display = 'none', 4000);
 
     const purchases = JSON.parse(localStorage.getItem('purchases') || '[]');
     const profile = JSON.parse(localStorage.getItem('profile') || '{}');
