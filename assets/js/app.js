@@ -229,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
       avatarImg.src = savedAvatar;
     }
   }
-
+  
   // ===== PROFILE PAGE =====
   if (page === 'profile.html') {
     const profileForm = document.getElementById('profileForm');
@@ -243,29 +243,41 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedBio = localStorage.getItem('bio');
     const savedAvatar = localStorage.getItem('avatar');
 
-    if (savedProfile.username) displayName.textContent = savedProfile.username;
-    if (savedProfile.username) usernameInput.value = savedProfile.username;
+    // Pre-fill existing data
+    if (savedProfile.username) {
+      displayName.textContent = savedProfile.username;
+      usernameInput.value = savedProfile.username;
+    }
     if (savedProfile.email) emailInput.value = savedProfile.email;
     if (savedBio) bioInput.value = savedBio;
     if (savedAvatar) avatarImg.src = savedAvatar;
 
-    profileForm?.addEventListener('submit', e => {
+    // Save Profile Data
+    profileForm?.addEventListener('submit', (e) => {
       e.preventDefault();
       const newUsername = usernameInput.value.trim();
       const newEmail = emailInput.value.trim();
       const newBio = bioInput.value.trim();
 
       if (!newUsername || !newEmail) {
-        alert('Username and email are required.');
+        alert('⚠ Username and email are required.');
         return;
       }
 
-      localStorage.setItem('profile', JSON.stringify({ ...savedProfile, username: newUsername, email: newEmail }));
+      // Save to localStorage
+      const updatedProfile = {
+        username: newUsername,
+        email: newEmail,
+      };
+
+      localStorage.setItem('profile', JSON.stringify(updatedProfile));
       localStorage.setItem('bio', newBio);
       displayName.textContent = newUsername;
+
       alert('✅ Profile updated!');
     });
 
+    // Handle avatar change
     const imageInput = document.createElement('input');
     imageInput.type = 'file';
     imageInput.accept = 'image/*';
@@ -280,15 +292,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (file && file.type.startsWith('image/')) {
         const reader = new FileReader();
         reader.onload = () => {
-          const imageName = `avatar_${Date.now()}.png`;
-          const link = document.createElement('a');
-          link.href = reader.result;
-          link.download = imageName;
-          link.click();
-
           avatarImg.src = reader.result;
           localStorage.setItem('avatar', reader.result);
-          window.location.href = 'dashboard.html';
+          alert('✅ Avatar updated!');
         };
         reader.readAsDataURL(file);
       }
@@ -296,5 +302,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.body.appendChild(imageInput);
   }
+
+  // ===== DASHBOARD PAGE =====
+  if (page === 'dashboard.html') {
+    const avatar = document.getElementById('dashboardAvatar');
+    const nameDisplay = document.getElementById('dashboardName');
+
+    const storedAvatar = localStorage.getItem('avatar');
+    const storedProfile = JSON.parse(localStorage.getItem('profile'));
+
+    if (avatar && storedAvatar) {
+      avatar.src = storedAvatar;
+    }
+
+    if (nameDisplay && storedProfile?.username) {
+      nameDisplay.textContent = storedProfile.username;
+    }
+  }
 });
-      
+  
