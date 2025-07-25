@@ -78,7 +78,7 @@
       <h1 class="text-4xl font-extrabold tracking-wide text-yellow-400">Dashboard</h1>
       <div class="flex items-center gap-4">
         <span id="displayName" class="text-sm text-gray-400 dark:text-gray-600"></span>
-        <img src="assets/img/avatar.png" alt="Avatar" class="w-12 h-12 rounded-full border-2 border-yellow-400 dark:border-yellow-600 shadow-md" />
+        <img id="userAvatar" src="assets/img/avatar.png" alt="Avatar" class="w-12 h-12 rounded-full border-2 border-yellow-400 dark:border-yellow-600 shadow-md" />
       </div>
     </section>
 
@@ -133,7 +133,9 @@
 <script>
   const profileData = JSON.parse(localStorage.getItem('profile'));
   const username = profileData?.username || 'Unknown User';
+  const avatarPath = profileData?.avatar || 'assets/img/avatar.png';
   document.getElementById('displayName').textContent = username;
+  document.getElementById('userAvatar').src = avatarPath;
 
   function displayLoginFrequency() {
     const loginCounts = JSON.parse(localStorage.getItem('loginCounts')) || {};
