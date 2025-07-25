@@ -4,7 +4,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // ===== DEFAULT ACCOUNT SETUP =====
   if (!localStorage.getItem('users')) {
     const defaultUsers = [
-      { fullname: 'Admin User', username: 'admin', email: 'admin@fluxplay.com', password: 'player1' }
+      {
+        fullname: 'Admin User',
+        username: 'admin',
+        email: 'admin@fluxplay.com',
+        password: 'player1'
+      }
     ];
     localStorage.setItem('users', JSON.stringify(defaultUsers));
   }
@@ -19,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ===== LOGOUT HANDLER =====
+  // ===== LOGOUT PAGE =====
   if (page === 'logout.html') {
     const logoutMessage = document.querySelector('p');
     if (logoutMessage) logoutMessage.textContent = 'Logging you out...';
@@ -28,11 +33,13 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.removeItem('profile');
     localStorage.removeItem('avatar');
     localStorage.removeItem('bio');
+    localStorage.removeItem('location');
+    localStorage.removeItem('birthday');
+    localStorage.removeItem('website');
 
     setTimeout(() => {
       window.location.href = 'index.html';
-    }, 1500); // Delay to show logout message
-
+    }, 1500);
     return;
   }
 
@@ -58,11 +65,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ===== REGISTER FUNCTION =====
+  // ===== REGISTER =====
   if (registerForm) {
-    registerForm.addEventListener('submit', e => {
+    registerForm.addEventListener('submit', (e) => {
       e.preventDefault();
-
       const fullname = document.getElementById('regFullName').value.trim();
       const username = document.getElementById('regUsername').value.trim();
       const email = document.getElementById('regEmail').value.trim();
@@ -75,14 +81,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
-        alert('Please enter a valid email address.');
+        alert('Invalid email format.');
         return;
       }
 
       const users = JSON.parse(localStorage.getItem('users')) || [];
-      const exists = users.some(u =>
-        u.username.toLowerCase() === username.toLowerCase() ||
-        u.email.toLowerCase() === email.toLowerCase()
+      const exists = users.some(
+        u =>
+          u.username.toLowerCase() === username.toLowerCase() ||
+          u.email.toLowerCase() === email.toLowerCase()
       );
 
       if (exists) {
@@ -92,23 +99,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
       users.push({ fullname, username, email, password });
       localStorage.setItem('users', JSON.stringify(users));
-
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('profile', JSON.stringify({ fullname, username, email }));
+
       alert('Registration successful! Redirecting to dashboard...');
       window.location.href = 'dashboard.html';
     });
   }
 
-  // ===== LOGIN FUNCTION =====
+  // ===== LOGIN =====
   if (loginForm) {
-    loginForm.addEventListener('submit', e => {
+    loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
 
       const users = JSON.parse(localStorage.getItem('users')) || [];
-      const user = users.find(u => u.username.toLowerCase() === username.toLowerCase() && u.password === password);
+      const user = users.find(
+        u =>
+          u.username.toLowerCase() === username.toLowerCase() &&
+          u.password === password
+      );
 
       if (user) {
         alert('Login successful!');
@@ -136,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
     sidebar?.classList.remove('translate-x-0');
   });
 
-  document.addEventListener('click', e => {
+  document.addEventListener('click', (e) => {
     if (
       sidebar?.classList.contains('translate-x-0') &&
       !sidebar.contains(e.target) &&
@@ -172,11 +183,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   const storedTheme = localStorage.getItem('theme');
-  if (storedTheme) {
-    applyTheme(storedTheme);
-  } else {
-    applyTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  }
+  applyTheme(
+    storedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+  );
 
   // ===== STATS PAGE =====
   if (page === 'stats.html') {
@@ -204,9 +213,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const cancelBtn = document.getElementById('cancelPurchaseBtn');
 
   window.buyGame = (title, price) => {
-    purchaseModal?.classList.remove('hidden');
-    gameTitle.textContent = title;
-    gamePrice.textContent = `Price: ${price}`;
+    if (purchaseModal) {
+      gameTitle.textContent = title;
+      gamePrice.textContent = `Price: ${price}`;
+      purchaseModal.classList.remove('hidden');
+    }
   };
 
   window.confirmPurchase = () => {
@@ -221,15 +232,17 @@ document.addEventListener('DOMContentLoaded', () => {
   confirmBtn?.addEventListener('click', window.confirmPurchase);
   cancelBtn?.addEventListener('click', window.closeModal);
 
-  // ===== DASHBOARD AVATAR DISPLAY =====
+  // ===== DASHBOARD =====
   if (page === 'dashboard.html') {
-    const avatarImg = document.querySelector('img[alt="Dashboard Avatar"]');
-    const savedAvatar = localStorage.getItem('avatar');
-    if (avatarImg && savedAvatar) {
-      avatarImg.src = savedAvatar;
-    }
+    const avatar = document.getElementById('dashboardAvatar');
+    const nameDisplay = document.getElementById('dashboardName');
+    const storedAvatar = localStorage.getItem('avatar');
+    const storedProfile = JSON.parse(localStorage.getItem('profile'));
+
+    if (avatar && storedAvatar) avatar.src = storedAvatar;
+    if (nameDisplay && storedProfile?.username) nameDisplay.textContent = storedProfile.username;
   }
-  
+
   // ===== PROFILE PAGE =====
   if (page === 'profile.html') {
     const profileForm = document.getElementById('profileForm');
@@ -237,47 +250,48 @@ document.addEventListener('DOMContentLoaded', () => {
     const usernameInput = document.getElementById('username');
     const emailInput = document.getElementById('email');
     const bioInput = document.getElementById('bio');
+    const locationInput = document.getElementById('location');
+    const birthdayInput = document.getElementById('birthday');
+    const websiteInput = document.getElementById('website');
     const avatarImg = document.querySelector('img[alt="Avatar"]');
 
     const savedProfile = JSON.parse(localStorage.getItem('profile')) || {};
     const savedBio = localStorage.getItem('bio');
     const savedAvatar = localStorage.getItem('avatar');
 
-    // Pre-fill existing data
-    if (savedProfile.username) {
-      displayName.textContent = savedProfile.username;
-      usernameInput.value = savedProfile.username;
-    }
-    if (savedProfile.email) emailInput.value = savedProfile.email;
-    if (savedBio) bioInput.value = savedBio;
+    usernameInput.value = savedProfile.username || '';
+    emailInput.value = savedProfile.email || '';
+    bioInput.value = savedBio || '';
+    locationInput.value = localStorage.getItem('location') || '';
+    birthdayInput.value = localStorage.getItem('birthday') || '';
+    websiteInput.value = localStorage.getItem('website') || '';
+    displayName.textContent = savedProfile.username || '';
     if (savedAvatar) avatarImg.src = savedAvatar;
 
-    // Save Profile Data
     profileForm?.addEventListener('submit', (e) => {
       e.preventDefault();
-      const newUsername = usernameInput.value.trim();
-      const newEmail = emailInput.value.trim();
-      const newBio = bioInput.value.trim();
 
-      if (!newUsername || !newEmail) {
+      const updatedProfile = {
+        username: usernameInput.value.trim(),
+        email: emailInput.value.trim()
+      };
+
+      if (!updatedProfile.username || !updatedProfile.email) {
         alert('⚠ Username and email are required.');
         return;
       }
 
-      // Save to localStorage
-      const updatedProfile = {
-        username: newUsername,
-        email: newEmail,
-      };
-
       localStorage.setItem('profile', JSON.stringify(updatedProfile));
-      localStorage.setItem('bio', newBio);
-      displayName.textContent = newUsername;
+      localStorage.setItem('bio', bioInput.value.trim());
+      localStorage.setItem('location', locationInput.value.trim());
+      localStorage.setItem('birthday', birthdayInput.value);
+      localStorage.setItem('website', websiteInput.value.trim());
 
+      displayName.textContent = updatedProfile.username;
       alert('✅ Profile updated!');
     });
 
-    // Handle avatar change
+    // Avatar change
     const imageInput = document.createElement('input');
     imageInput.type = 'file';
     imageInput.accept = 'image/*';
@@ -302,22 +316,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.body.appendChild(imageInput);
   }
-
-  // ===== DASHBOARD PAGE =====
-  if (page === 'dashboard.html') {
-    const avatar = document.getElementById('dashboardAvatar');
-    const nameDisplay = document.getElementById('dashboardName');
-
-    const storedAvatar = localStorage.getItem('avatar');
-    const storedProfile = JSON.parse(localStorage.getItem('profile'));
-
-    if (avatar && storedAvatar) {
-      avatar.src = storedAvatar;
-    }
-
-    if (nameDisplay && storedProfile?.username) {
-      nameDisplay.textContent = storedProfile.username;
-    }
-  }
 });
-  
