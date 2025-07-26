@@ -25,8 +25,7 @@ fluxplay/
 ├── assets/
 │   ├── css/
 │   ├── img/
-│   └── js/ app.js
-         └── prof.js      
+│   └── js/ app.js      
 ├── dashboard.html
 ├── profile.html
 ├── stats.html
