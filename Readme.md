@@ -2,7 +2,7 @@
 
 Welcome to **FluxPlay** — a futuristic, responsive, and immersive gaming web app where players can track stats, customize profiles, and access a rich dashboard interface.
 
-![FluxPlay Banner](https://raw.githubusercontent.com/FluxDev-Tech/Fluxplay/main/assets/img/banner.jpg)
+![FluxPlay Banner](https://github.com/FluxDev-Tech/Fluxplay/blob/yuji/assets/banner.png)
 
 ---
 
